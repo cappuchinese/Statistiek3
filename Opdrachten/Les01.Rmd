@@ -1,0 +1,193 @@
+---
+title: "Stat3_Les01_v4"
+output: html_document
+---
+
+
+###############################################################################
+#
+# Statistiek 3 BIN
+#
+# 2020-2021
+# 
+# Emile Apol 
+#
+# Les 01 - Introductie R en statistiek 1+2
+#
+###############################################################################
+
+
+
+###############################################################################
+#
+# Voorbeeld 1.1 - Lengte van 10-jarige Groningers
+#
+###############################################################################
+
+Q: Is de gemiddelde lengte anders dan 135 cm?
+
+Data: 
+
+```{r}
+L <- c(129, 139, 124, 133, 135)
+```
+
+a) Maak een histogram van deze data.
+
+```{r}
+hist(L, xlab = "Lengte (cm)", ylab = "Frequentie", main = "Lengte van 10-jarige Groningers")
+```
+
+b) Wat is de gemiddelde lengte, wat is de standaarddeviatie?
+
+```{r}
+y.av = mean(L)
+s = sd(L)
+cat("Gemiddelde = ",y.av,", standaarddeviatie = ",s)
+```
+
+c) Stel, we hadden *nog* meer data gehad:
+
+```{r}
+L = c(129, 139, 124, 133, 135, 
+      120, 138, 133, 132, 128,
+      129, 132, 133, 135, 134, 
+      141, 134, 136, 131, 132,
+      127, 138, 135, 129, 137)
+```
+
+Maak opnieuw een histogram.
+
+```{r}
+
+```
+
+============================= INTERMEZZO NORMAALVERDELING ==============================
+
+Dit histogram lijkt op een normaalverdeling. In R kun je de kansverdeling plotten via de functie dnorm(x, mu, sigma):
+
+```{r}
+mu <- 0
+sigma <- 1
+x = seq(-3, 3, 0.01)
+f = dnorm(x, 0, 1)
+
+plot(x, f, xlab="y-waarde", ylab="Probability f(y)", type="l", col="red")
+```
+
+Plot een normaalverdeling met mu = y.av en sigma = s in het histogram.
+
+```{r}
+y.av <- mean(L)
+s <- sd(L)
+cat("Gemiddelde = ",y.av,", standaarddeviatie = ",s)
+
+
+hist(L, xlab = "Lengte (cm)", ylab = "Frequentie", main = "Lengte van 10-jarige Groningers", freq = F)
+curve(dnorm(x, y.av, s), from=120, to=145, col="red", add=T)
+```
+
+Intermezzo over de normaalverdeling:
+
+pnorm(L, mu, sigma) geeft de kans dat y < L, dus het oppervlak *links* van L onder de normaalcurve.
+
+```{r}
+# Gegeven: y (in cm) heeft een normaalverdeling met
+mu <- 130
+sigma <- 5
+
+# 1) Wat is de kans dat y kleiner is dan 125 cm?
+
+
+
+# 2) Wat is de kans dat y tussen 120 en 125 cm ligt?
+
+
+
+# 3) Wat is de kans dat y groter is dan 140 cm?
+
+
+
+```
+
+qnorm(p, mu, sigma) geeft antwoord op de omgekeerde vraag: voor een gegeven linker oppervlak (= kans), wat is L? Dit heet de quantile functie.
+
+```{r}
+# Gegeven: y (in cm) heeft een normaalverdeling met
+mu <- 130
+sigma <- 5
+
+# 1) Beneden welke lengte ligt 5% van alle data?
+
+
+
+# 2) Boven welke lengte ligt 5% van alle data?
+
+
+```
+
+Een 95% BetrouwbaarheidsInterval (= 95% BI) is het gebied van 95% rondom het gemiddelde van de verdeling, dus met grenzen 2.5% en 97.5%.
+
+```{r}
+# Gegeven: y (in cm) heeft een normaalverdeling met
+mu <- 130
+sigma <- 5
+
+lower = qnorm(0.025, mu, sigma)
+upper = qnorm(0.975, mu, sigma)
+
+cat("95% BI = [", lower, ", ", upper,"] cm\n")
+```
+
+```{r}
+# Wat als je een andere zekerheid, bijv. 90% of 50% wilt?
+zekerheid = 0.50
+
+lower = y.av + qnorm((1-zekerheid)/2,0,1)*s/sqrt(n)
+upper = y.av + qnorm(1-(1-zekerheid)/2, 0, 1)*s/sqrt(n)
+
+cat("95% BI = [", lower, ", ", upper,"] cm\n")
+```
+
+=================================== EINDE INTERMEZZO NORMAALVERDELING =================
+
+Data (lengte van n = 5 10-jarige Groningers):
+
+```{r}
+L <- c(129, 139, 124, 133, 135)
+```
+
+Gemiddelde en standaarddeviatie:
+
+```{r}
+
+```
+
+De verdeling van het gemiddelde y.av (dus NIET van de waarden y) heeft *bij benadering* een normaalverdeling met standaarddeviatie s/sqrt(n). Het 95% BI van het gemiddelde is dus *bij benadering* y.av + qnorm(c(0.025, 0.975), 0, 1) * s/sqrt(n). 
+
+d) Bereken de gemiddelde lengte van dit sample en bereken het benaderde 95% Betrouwbaarheidsinterval van dit gemiddelde.
+
+```{r}
+
+```
+
+e) Is het gemiddelde significant anders dan 135 cm?
+
+
+
+
+
+De *exacte* verdeling van het gemiddelde y.av is een t-verdeling met df = n-1 degrees of freedom. De quantile functie van de t-verdeling is qt(p, df).
+
+f) Bereken de gemiddelde lengte van dit sample en bereken het exacte 95% Betrouwbaarheidsinterval van dit gemiddelde.
+
+```{r}
+
+```
+
+g) Is het gemiddelde significant anders dan 135 cm?
+
+
+
+
+
