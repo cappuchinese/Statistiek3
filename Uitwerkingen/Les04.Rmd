@@ -1,0 +1,618 @@
+---
+title: "Stat3_Les04_FS_v5"
+author: "Emile Apol"
+date: "16-2-2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+###############################################################################
+#
+# Statistiek 3 BIN
+#
+# 2020-2021
+#
+# Emile Apol 
+#
+# Les 04 - Welch t-toets, long format, factore, levels
+#
+###############################################################################
+
+
+###############################################################################
+#
+# Voorbeeld 4.0 - Longinhoud mijnwerkers
+#
+###############################################################################
+
+Gezonde mannen hebben een longinhoud van ca. 4.5 liter. Er wordt vermoed dat 
+mijnwerkers door het inademen van mijnstof een kleinere longinhoud hebben. 
+
+Meting: y = longinhoud (in L) van 23 willekeurig gekozen mijnwerkers.
+
+```{r}
+y <- c(3.51, 2.66, 3.12, 4.56, 3.77, 4.69, 2.88, 4.05, 5.12, 2.58, 
+       4.32, 3.57, 3.96, 5.04, 2.97, 4.22, 3.49, 3.58, 4.65, 6.48, 
+       5.12, 4.24, 3.18)
+```
+
+a) Maak een boxplot van deze data.
+
+```{r}
+boxplot(y, ylab="Longinhoud (L)", main="Longinhoud van mijnwerkers")
+```
+
+b) Is de gemiddelde longinhoud van mijnwerkers lager dan 4.5 L? Toets met alpha = 0.05.
+
+```{r}
+res <- t.test(y, mu=4.5, alternative = "less")
+res
+```
+
+p << 0.05, dus H1: De gemiddelde longinhoud is significant lager dan 4.5 L.
+
+
+c) Wat is de effectsterkte? Is het verschil met 4.5 L klein, matig of groot?
+
+```{r}
+d <- abs(res$statistic/sqrt(length(y)))
+d
+```
+
+|d| ongeveer 0.5, dus een matig verschil met 4.5 L.
+
+
+
+###############################################################################
+#
+# Voorbeeld 4.1 - pH van een oplossing
+#
+###############################################################################
+
+De zuurtegraad (pH) kan tijdens een chemische reactie veranderen.
+
+Meting: y = pH oplossing (-) voor en na een chemische reactie 
+
+```{r}
+y.voor <- c(4.54, 4.67, 4.53, 4.59, 4.64, 4.62, 4.65)
+y.na <- c(4.67, 4.61, 4.68, 4.71, 4.65, 4.63)
+```
+
+a) Maak een boxplot van deze data
+```{r}
+boxplot(y.voor, y.na, ylab = "pH oplossing", xlab = "Tijdstip")
+```
+
+
+b) Is pH voor ANDERS dan na reactie? Gebruik een Welch (2-sample) t-toets. Toets met alpha = 0.05.
+
+H0: y.voor = y.na
+H1: y.voor != y.na
+```{r}
+t.test(y.voor, y.na)
+```
+p = 0.06 > 0.05 = alpha, dus H0: Er is geen significant verschil in pH.
+
+c) Is pH voor LAGER dan na reactie? Gebruik een Welch (2-sample) t-toets. Toets met alpha = 0.05.
+
+H0: y.voor = y.na
+H1: y.voor < y.na
+
+```{r}
+t.test(y.voor, y.na, alternative = "less")
+```
+p = 0.03 < 0.05 = alpha, dus H1: De pH voor de reactie is significant lager dan de pH na de reactie.
+
+
+d) Is pH voor HOGER dan na reactie? Gebruik een Welch (2-sample) t-toets. Toets met alpha = 0.05.
+
+H0: y.voor = y.na
+H1: y.voor > y.na
+```{r}
+t.test(y.voor, y.na, alternative = "greater")
+```
+p = 0.97 >> 0.05 = alpha, dus H0: De pH voor de reactie is niet significant hoger dan de pH na de reactie.
+
+
+
+Effectsterkte: Cohen's d
+
+      d = t*sqrt(1/n.1 + 1/n.2)
+
+
+      d = 0.2   klein verschil
+      d = 0.5   matig verschil
+      d = 0.8   groot verschil
+      
+e) Is het verschil in pH klein, matig of groot?
+
+```{r}
+res <- t.test(y.voor, y.na)
+t <- res$statistic 
+n.1 <- length(y.voor) 
+n.2 <- length(y.na) 
+d <- abs(t)*sqrt(1/n.1 + 1/n.2) 
+names(d) <- "Cohen's d.av"
+cat("Effectsterkte d.av = ",d,"\n")
+```
+| d.av | > 0.8, dus het verschil in pH is groot.
+
+
+
+
+
+Je kunt in R de data ook in het zogenaamde "long format" overzetten. 
+Dat betekent dat alle y-waarden in 1 kolomvector y komen, en er een tweede vector g met "groepsaanduidingen" nodig is. Deze groepsaanduiding is een "factor".
+
+Dit kan samengevoegd worden tot één dataframe.
+
+```{r}
+pH <- c(y.voor, y.na)
+group <- c(rep("voor", length(y.voor)), 
+           rep("na", length(y.na))) 
+pH.data <- data.frame(pH = pH,
+                      groep = group)
+```
+
+Handige commando's in R:
+
+str(group)
+pH.data$pH
+pH.data$groep
+str(pH.data$groep)
+
+```{r}
+str(group)
+```
+
+```{r}
+pH.data$pH
+```
+
+```{r}
+pH.data$groep
+```
+
+```{r}
+str(pH.data$groep)
+```
+
+f) Maak een boxplot van dit dataframe.
+
+```{r}
+boxplot(pH.data$pH ~ pH.data$groep, ylab = "pH", xlab = "Tijdstip")
+```
+
+OF (handiger)
+
+```{r}
+boxplot(pH ~ groep, data = pH.data, ylab = "pH", xlab = "Tijdstip")
+```
+
+g) Is pH voor ANDERS dan na reactie? Gebruik een Welch (2-sample) t-toets. Toets met alpha = 0.05. Gebruik de data in het dataframe.
+
+```{r}
+t.test(pH ~ groep, data = pH.data, alternative = "two.sided")
+```
+H0: y.voor = y.na
+H1: y.voor = y.na
+
+R berekent t = (y.1 - y.2)/fout door voor y.1 het 1e level te nemen en voor y.2 het 2e level.
+```{r}
+pH.data$groep
+```
+
+De volgorde van de levels is standaard alfanumeriek, dus "na" = 1e level, "voor" = 2e level. 
+Dus in R: t = (y.na - y.voor)/fout.
+
+p = 0.06 > 0.05 = alpha, dus H0: De pH is niet significant veranderd tijdens de chemische reactie.
+
+
+
+h) Is pH voor LAGER dan na reactie? Gebruik een Welch (2-sample) t-toets. Toets met alpha = 0.05.
+
+H0: y.voor = y.na
+H1: y.voor < y.na
+
+R berekent t = (y.1 - y.2)/fout door voor y.1 het 1e level te nemen en voor y.2 het 2e level.
+De volgorde van de levels is standaard alfanumeriek, dus "na" = 1e level, "voor" = 2e level.
+Dus in R: t = (y.na - y.voor)/fout.
+
+H1 is dus: y.na > y.voor, dus alternative = "greater"!
+```{r}
+t.test(pH ~ groep, data = pH.data, alternative = "greater")
+```
+p = 0.03 < 0.05 = alpha, dus H1: De pH is na de reactie significant hoger dan voor de reactie (of: de pH is voor de reactie significant lager dan na de reactie).
+
+
+i) Is pH voor HOGER dan na reactie? Gebruik een Welch (2-sample) t-toets. Toets met alpha = 0.05.
+Zie de discussie hierboven: alternative = "less"
+```{r}
+t.test(pH ~ groep, data = pH.data, alternative = "less")
+```
+p = 0.97 >> 0.05 = alpha, dus H0: De pH is na de reactie niet significant lager dan voor de reactie (of: de pH is voor de reactie niet significant hoger dan na de reactie).
+
+
+NB. Je kunt ZELF de volgorde van de levels aanpassen:
+```{r}
+pH.data$groep <- factor(pH.data$groep, levels=c("voor","na"))
+pH.data$groep
+```
+
+
+###############################################################################
+#
+# Voorbeeld 4.2 - Genexpressie (1)
+#
+###############################################################################
+
+
+Meting: y = genexpressie (op log-schaal) van een gen dat codeert voor een eiwit 
+           dat een ionenkanaal door de celwand maakt, voor mensen die een bepaalde ziekte wel en
+             niet hebben
+```{r}
+y.ziek <- c(1.942, 1.893, 2.313, 2.340, 2.178, 2.300, 2.212, 1.908, 0.962, 1.922, 1.927, 
+            1.976, 2.137, 1.588, 2.634)
+y.gezond <- c(1.434, 2.448, 2.003, 2.453, 1.721, 1.701, 1.593, 1.549, 1.654, 2.043, 1.563,
+              0.926, 0.685, 1.494, 2.537, 1.181, 1.021, 1.734)
+```
+ 
+ 
+a) Maak een boxplot van deze data
+```{r}
+boxplot(y.ziek, y.gezond, ylab="Log genexpressie")
+```
+OF beter:
+```{r}
+y <- c(y.ziek, y.gezond)
+g <- factor(c(rep("ziek", length(y.ziek)), 
+       rep("gezond", length(y.gezond))))
+boxplot(y ~ g, xlab = "Toestand", ylab = "Log genexpressie")
+
+```
+
+
+
+
+b) Is de genexpressie anders voor beide groepen?
+```{r}
+t.test(y.ziek, y.gezond)
+```
+p = 0.02 < 0.05 = alpha, dus H1: Er is een significant verschil in genexpressie.
+
+OF (beter):
+```{r}
+t.test(y ~ g)
+```
+p = 0.02 < 0.05 = alpha, dus H1: Er is een significant verschil in genexpressie.
+
+NB. Het eerste level is "gezond", het 2e level is "ziek".
+
+
+
+c) Wat is de effectsterkte?
+```{r}
+res <- t.test(y.ziek, y.gezond)
+t <- res$statistic 
+n.1 <- length(y.ziek) 
+n.2 <- length(y.gezond) 
+d.av <- abs(t)*sqrt(1/n.1 + 1/n.2) 
+names(d.av) <- "Cohen's d.av"
+cat("Effectsterkte Cohen's d.av = ",d.av,"\n")
+```
+| d.av | ongeveer 0.8, dus een groot verschil.
+
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 4.3 - Genexpressie (2)
+#
+###############################################################################
+
+
+Meting: y = genexpressie (op log-schaal) van een gen dat codeert voor een eiwit 
+             dat afbraakreactie katalyseert, voor mensen die een bepaalde ziekte wel en
+             niet hebben
+             
+             
+```{r}
+y.ziek <- c(4.439, 4.457, 4.076, 4.396, 4.278, 3.816, 4.110, 4.930, 4.734, 4.573, 4.609, 
+            4.787, 4.551, 4.820, 4.053, 4.648, 4.884, 4.666)
+y.gezond <- c(4.846, 4.455, 4.136, 4.201, 4.217, 4.100, 3.663, 4.152, 4.425, 4.274, 3.947,
+              4.957, 4.309, 4.111, 4.277, 4.479, 4.759, 4.650)
+```
+
+
+a) Maak een boxplot van deze data
+```{r}
+y <- c(y.ziek, y.gezond)
+g <- factor(c(rep("ziek", length(y.ziek)), 
+       rep("gezond", length(y.gezond))))
+boxplot(y ~ g, xlab = "Toestand", ylab = "Log genexpressie")
+```
+
+
+b) Is de genexpressie voor zieke mensen hoger dan voor gezonde mensen?
+
+NB. 1e level = "gezond", 2e level = "ziek". Dus y.ziek > y.gezond is equivalent met y.gezond < y.ziek, dus alternative = "less
+```{r}
+t.test(y ~ g, alternative = "less")
+```
+p = 0.07 > 0.05 = alpha, dus H0: De genexpressie voor zieke mensen is niet significant hoger dan voor gezonde mensen.
+
+
+c) Wat is de effectsterkte?
+```{r}
+res <- t.test(y ~ g, alternative = "less")
+t <- res$statistic 
+n.1 <- length(y.ziek) 
+n.2 <- length(y.gezond) 
+d.av <- abs(t)*sqrt(1/n.1 + 1/n.2)
+names(d.av) <- "Cohen's d.av"
+cat("Effectsterkte Cohen's d.av = ",d.av,"\n")
+```
+| d.av | ongeveer 0.5, dus een matig verschil.
+
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 4.4 - Genexpressie (3)
+#
+###############################################################################
+
+
+Meting: y = genexpressie (op log-schaal) van een gen dat codeert voor een eiwit 
+             dat afbraakreactie katalyseert, voor mensen die een bepaalde ziekte wel en
+             niet hebben
+             
+             
+```{r}
+y.ziek <- c(4.439, 4.457, 4.076, 4.396, 4.278, 3.816, 4.110, 4.930, 4.734, 4.573, 4.609, 
+            4.787, 4.551, 4.820, 4.053, 4.648, 4.884, 4.666, 4.490, 4.390, 4.590)
+y.gezond <- c(4.846, 4.455, 4.136, 4.201, 4.217, 4.100, 3.663, 4.152, 4.425, 4.274, 3.947,
+              4.957, 4.309, 4.111, 4.277, 4.479, 4.759, 4.650, 4.212, 4.421, 4.332)
+```
+
+
+a) Maak een boxplot van deze data. Hoeveel metingen zijn er in elke dataset?
+```{r}
+y <- c(y.ziek, y.gezond)
+g <- factor(c(rep("ziek", length(y.ziek)), 
+       rep("gezond", length(y.gezond))))
+boxplot(y ~ g, xlab = "Toestand", ylab = "Log genexpressie")
+n.1 <- length(y.ziek)
+n.2 <- length(y.gezond)
+cat("n.ziek = ",n.1," n.gezond = ",n.2,"\n")
+```
+
+
+b) Is de genexpressie voor zieke mensen hoger dan voor gezonde mensen?
+
+NB. 1e level = "gezond", 2e level = "ziek". Dus y.ziek > y.gezond is equivalent met y.gezond < y.ziek, dus alternative = "less
+```{r}
+t.test(y ~ g, alternative = "less")
+```
+p = 0.04 < 0.05 = alpha, dus H0: De genexpressie voor zieke mensen is wel significant hoger dan voor gezonde mensen.
+
+
+c) Wat is de effectsterkte?
+```{r}
+res <- t.test(y ~ g, alternative = "less")
+t <- res$statistic 
+n.1 <- length(y.ziek) 
+n.2 <- length(y.gezond) 
+d.av <- abs(t)*sqrt(1/n.1 + 1/n.2)
+names(d.av) <- "Cohen's d.av"
+cat("Effectsterkte Cohen's d.av = ",d.av,"\n")
+```
+| d.av | ongeveer 0.5, dus een matig verschil.
+
+
+
+###############################################################################
+#
+# Voorbeeld 4.5 - Ouderdom van hagedissen
+#
+###############################################################################
+
+Meting: y = ouderdom bij overlijden (jaar) voor twee groepen die bij 20 oC en bij 30 oC leven.
+
+```{r}
+y.20 <- c(13, 12, 15, 14, 15, 12, 16, 17, 11, 13)
+y.30 <- c(8, 12, 9, 11, 14, 9, 13, 16)
+```
+
+a) Maak een boxplot van deze data.
+
+```{r}
+y <- c(y.20, y.30)
+g <- factor(c(rep("20 oC", length(y.20)),
+              rep("30 oc", length(y.30))))
+boxplot(y ~ g, xlab = "Temperatuur", ylab = "Ouderdom (jaar)")
+```
+
+Hagedissen zijn koudbloedige dieren. Omdat de stofwisseling sneller gaat bij hogere (lichaams)temperatuur is de hypothese dat hagedissen die bij lagere temperatuur leven ouder zullen worden. 
+
+b) Worden studenten bij 20 oC ouder dan bij 30 oC? Toets met alpha = 0.05.
+```{r}
+str(g)
+```
+
+```{r}
+test <- t.test(y ~ g, alternative = "greater")
+test
+```
+p-value = 0.03495 < 0.05 = alpha, dus bij 20 oC significant ouder dan bij 30 oC.
+
+
+c) Wat is de effectsterkte? Is het verschil in temperatuur klein, matig of groot?
+
+```{r}
+t <- test$statistic
+n.1 <- length(y.20)
+n.2 <- length(y.30)
+d.av <- t*sqrt(1/n.1 + 1/n.2)
+names(d.av) <- "Cohen's d"
+cat("Effectsterkte: d.av = ",d.av,"\n")
+```
+
+ Cohen's d is groot (|d| rond 0.8), dus er is een groot verschil in ouderdom! 
+
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 4.6 - Functie voor p- en d-waarden van t-toetsen
+#
+###############################################################################
+
+a) Als y een vector is met data, en mu de referentiewaarde, schrijf dat in R een functie die op basis van een 1-sample t-toets de 2-zijdige p-waarde uitrekent en Cohen's d-waarde. Het resultaat is een list met twee elementen: p.value en d.value.
+
+```{r}
+OneSampleT <- function(y, mu){
+  res <- t.test(y, mu=mu)
+  p.value <- res$p.value
+  n <- length(y)
+  t.value <- res$statistic
+  d.value <- t.value/sqrt(n)
+  a <- list()
+  a[[1]] <- p.value
+  a[[2]] <- d.value
+  names(a) <- c("p.value", "d.value")
+  return(a)
+}
+```
+
+b) Bereken met je eigen functie voor de volgende dataset of de waarde significant afwijkt van 10.5, en of het verschil klein, matig of groot is.
+
+```{r}
+y <- c(10.8, 10.6, 10.5, 10.7, 10.4, 10.7, 10.6, 10.2, 10.6, 10.6, 
+       10.7, 10.4, 10.9, 10.7, 10.5, 10.7, 10.6, 10.9, 10.4, 10.7, 
+       10.6, 10.7, 10.6, 10.2, 10.6, 10.5, 10.5, 10.5, 10.4, 10.9, 
+       10.6, 10.5, 10.6, 10.6, 10.7, 10.6, 10.7, 10.4, 10.5, 10.6)
+```
+
+```{r}
+res <- OneSampleT(y, mu = 10.5)
+cat("p.value = ",res$p.value," d.value = ",res$d.value)
+```
+
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 4.7 - Aantal kinderen per vrouw
+#
+###############################################################################
+
+Op Blackboard, in de ascii file "Kinderen_v1.txt" staan data van het aantal kinderen per vrouw voor een heel aantal Europese landen. Daarnaast is er per land aangegeven of het een noordelijk/zuidelijk land is ("Hoogtegraad") en of het een westelijk of oostelijk land is ("Breedtegraad").
+
+a) Lees de data data in; de file bevat een header en is tab-separated.
+
+```{r}
+getwd()
+setwd("F:/Hanze/ILST/vakken/kwartaal 07/Statistiek 3 BIN/lessen/2020-2021/Les 04 - Welch t-toetsen")
+myData <- read.table(file = "Kinderen_v1.txt", header = T, sep = "\t")
+head(myData)
+str(myData)
+myData
+```
+
+Pas eventueel zelf nog de levelvolgorde voor "Breedtegraad" aan, zodat 1e level = "W" en 2e level = "O":
+
+```{r}
+myData$Breedtegraad <- factor(myData$Breedtegraad, levels = c("W", "O"))
+str(myData)
+```
+
+
+
+b) Is er een verschil in aantal kinderen per vrouw tussen noordelijke en zuidelijke landen? Maak een boxplot en voer een toets uit met alpha = 0.05.
+
+```{r}
+boxplot(KinderenPerVrouw ~ Hoogtegraad, data = myData, 
+        xlab = "Hoogtegraad", ylab = "Kinderen per vrouw")
+res <- t.test(KinderenPerVrouw ~ Hoogtegraad, data = myData)
+res
+n.1 <- sum(myData$Hoogtegraad == "N")
+n.2 <- sum(myData$Hoogtegraad == "Z")
+d.av <- abs(res$statistic)*sqrt(1/n.1 + 1/n.2)
+names(d.av) <- "Cohen's d.av"
+cat("Effectsterkte: d.av = ",d.av,"\n")
+```
+
+c) Is er een verschil in aantal kinderen per vrouw tussen westelijke en oostelijke landen? Maak een boxplot en voer een toets uit met alpha = 0.05.
+
+```{r}
+boxplot(KinderenPerVrouw ~ Breedtegraad, data = myData, 
+        xlab = "Breedtegraad", ylab = "Kinderen per vrouw")
+res <- t.test(KinderenPerVrouw ~ Breedtegraad, data = myData)
+res
+n.1 <- sum(myData$Breedtegraad == "W")
+n.2 <- sum(myData$Breedtegraad == "O")
+d.av <- abs(res$statistic)*sqrt(1/n.1 + 1/n.2)
+names(d.av) <- "Cohen's d.av"
+cat("Effectsterkte: d.av = ",d.av,"\n")
+```
+
+d) Maak een functie die op basis van een vector met data y en een "groepsfactor" g een 2-zijdige Welch t-toets uitvoert, de p-waarde en Cohen's d.av waarde teruggeeft.
+
+```{r}
+myTwoSampleTTest <- function(y, x){
+  res <- t.test(y ~ x)
+  pValue <- res$p.value
+  n.1 <- sum(x == levels(x)[[1]])
+  n.2 <- sum(x == levels(x)[[2]])
+  d.av <- abs(res$statistic)*sqrt(1/n.1 + 1/n.2)
+  a <- c()
+  a[[1]] <- pValue
+  a[[2]] <- d.av
+  names(a) <- c("p.value", "d.av")
+  return(a)
+}
+```
+
+e) Herhaal b) met de nieuwe functie.
+
+```{r}
+myTwoSampleTTest(myData$KinderenPerVrouw, myData$Hoogtegraad)
+```
+p < 0.05, dus H1: Er is een significant verschil in aantal kinderen per vrouw tussen Westelijke en Oostelijke landen. De effectsterkte is groot, dus er is een groot en significant verschil. 
+
+
+f) Herhaal c) met de nieuwe functie.
+
+```{r}
+myTwoSampleTTest(myData$KinderenPerVrouw, myData$Breedtegraad)
+```
+p < 0.05, dus H1: Er is een significant verschil in aantal kinderen per vrouw tussen Westelijke en Oostelijke landen. De effectsterkte is groot, dus er is een groot en significant verschil. 
+
+
+g) Bereken per Hoogtegraad het gemiddelde aantal kinderen per vrouw. 
+
+```{r}
+tapply(myData$KinderenPerVrouw, myData$Hoogtegraad, mean)
+```
+
+
+h) Bereken per Breedtegraad het gemiddelde aantal kinderen per vrouw.
+
+```{r}
+tapply(myData$KinderenPerVrouw, myData$Breedtegraad, mean)
+```
+
+
