@@ -1,0 +1,402 @@
+---
+title: "Opdrachten Statistiek 3 BIN (22 juni 2020)"
+author: ""
+date: "6/22/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(results = 'hold')
+```
+
+Typ je naam hier: 
+
+Typ je studentnummer hier:
+
+
+
+
+
+
+
+#########################################################################################
+# 
+## Opgave 1 - Sterftecijfer Covid-19 voor twee bevolkingsgroepen in de VS
+#
+#########################################################################################
+
+Het SARS-CoV-2 virus woedt nog steeds rond. Onder andere in de VS maakt het veel slachtoffers. Als snel kwam in het nieuws dat Afro-Americans onevenredig meer werden getroffen door Corona-19 dan blanken (Caucasians). Voor een aantal staten in de VS is het corona sterftecijfer per 100 000 inwoners voor zowel Afro-Americans als Caucasians bepaald. De gegevens staan in de file Opgave_1.txt. Dit is een tab-separated ascii file met header.
+
+
+**a.** Lees de data in, en maak in R een goede boxplot van het corona sterftecijfer als functie van bevolkingsgroep. Let op de as-titels en eenheden!
+
+```{r}
+
+```
+
+
+
+**b.** Leg uit welke statistische toets geschikt is om te onderzoeken of er een verschil is in corona sterftecijfer tussen Afro-Americans en Caucasians.
+
+
+
+
+
+
+**c.** Is er een verschil in corona sterftecijfer tussen Afro-Americans en Caucasians? Toets met $\alpha = 0.05$.
+
+```{r}
+
+```
+
+
+
+**d.** Wat is de effectsterkte? Is het verschil in corona sterftecijfer tussen Afro-Americans en Caucasians een klein, matig of groot verschil?
+
+```{r}
+y.1 <- mean(myData$Afro.Americans)
+y.2 <- mean(myData$Caucasians)
+s2.1 <- var(myData$Afro.Americans)
+s2.2 <- var(myData$Caucasians)
+d.av <- abs(y.1 - y.2)/sqrt((s2.1 + s2.2)/2)
+
+cat("Effectsterkte: d.av = ",d.av)
+```
+
+
+
+
+
+
+
+
+
+#########################################################################################
+#
+## Opgave 2 - Ziekenhuisopnames Covid-19 patiënten in Nederland
+#
+#########################################################################################
+
+Ook Nederland is getroffen door de Covid-19 uitbraak. Een deel van de geinfecteerde personen moet worden opgenomen voor behandeling in het ziekenhuis. Gelukkig valt het aantal opnames in het noorden van ons land mee, maar er wonen hier ook minder mensen. In de file Opgave_2.txt staat per regio (Noord, Zuid, Oost en West) het aantal corona ziekenhuisopnames per 100 000 inwoners. Dit is een tab-separated ascii file met header, in “wide” format, met voor elke provincie een waarde.
+
+
+**a.** Lees de data in R in, en zet het dataframe om naar een dataframe in “long” format.
+
+```{r}
+
+```
+
+
+
+**b.** Maak een goede boxplot van opnames per 100 000 als functie van regio. Let op de as-titels en eenheden!
+
+```{r}
+
+```
+
+
+
+**c.** Welke statistische analyse is geschikt om te onderzoeken of het aantal corona ziekenhuisopnames per 100 000 inwoners verschilt per regio? Leg kort uit.
+
+
+
+
+
+**d.** Is er een verschil in het aantal corona ziekenhuisopnames per 100 000 inwoners tussen de regio’s?  Toets met $\alpha = 0.05$.
+
+```{r}
+( res <- summary(aov(Opnames ~ Regio, data = LongData)) )
+
+p.value <- res[[1]]$Pr[1]
+cat("\np-waarde = ",p.value,"\n")
+```
+
+
+
+**e.** Hoe groot is de effectsterkte? Heeft de regio een klein, matig of sterk effect op het aantal corona ziekenhuisopnames per 100 000 inwoners?
+
+```{r}
+eta2 <- res[[1]]$Sum[1]/sum(res[[1]]$Sum)
+cat("Effectsterkte: eta2 = ",eta2,"\n")
+```
+
+
+
+**f.** Voer een geschikte post-hoc test uit om te zien welke regio’s hetzelfde aantal opnames per 100 000 inwoners geven. Toets met $\alpha = 0.05$.
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+#########################################################################################
+#
+## Opgave 3 - Sterftecijfer Covid-19 in de VS: republikeinen vs. democraten
+#
+#########################################################################################
+
+Het SARS-CoV-2 virus woedt nog steeds rond. Onder andere in de VS maakt het veel slachtoffers. De republikeinse regering o.l.v. Donald Trump ontkende eerst het gevaar van het virus. Democratische gouverneurs van verschillende staten kondigden echter al snel allerlei maatregelen aan om verspreiding van het virus te stoppen. Republikeinse gouverneurs volgden pas later maar beëindigden de maatregelen ook weer eerder. Democratische staten zijn vooral de stedelijke gebieden aan de oost- en westkust, republikeinse staten zijn vooral het dunbevolktere platteland in het midden. Voor 26 van de 51 random gekozen staten in de VS is het corona sterftecijfer van *blanken* per 100 000 inwoners bepaald (peildatum 9 juni 2020), alsmede de partij van de gouverneur: D = democraat of R = republikein. De gegevens staan in de file Opgave_3.txt. Dit is een tab-separated ascii file met header.
+
+**a.** Lees de data in, en maak in R een goede boxplot van het corona sterftecijfer van blanken als functie van de partij van de gouverneur. Let op de as-titels en eenheden!
+
+```{r}
+
+```
+
+
+
+**b.** Leg uit welke statistische toets geschikt is om te onderzoeken of er een verschil is in corona sterftecijfer tussen democratische en republikeinse staten.
+
+
+
+
+
+**c.** Is er een verschil in corona sterftecijfer tussen democratische en republikeinse staten? Toets met $\alpha = 0.05$.
+
+```{r}
+( res <- t.test(Sterfte ~ Gouverneur, data = myData) )
+p.value <- res$p.value
+
+cat("p-waarde = ",p.value,"\n")
+
+```
+
+
+
+**d.** Wat is de effectsterkte? Is het verschil in corona sterftecijfer tussen democratische en republikeinse staten een klein, matig of groot verschil?
+
+```{r}
+
+```
+
+
+
+**e.** Toont deze analyse *eenduidig* aan dat er een significant verschil zit tussen de resultaten van de democratische en de republikeinse aanpak van de coronacrisis? Licht je antwoord kort toe, en geef ook een mogelijke andere verklaring voor de eventueel gevonden verschillen in sterftecijfer.
+
+
+
+
+
+
+
+
+#########################################################################################
+#
+## Opgave 4 - Corona sterftecijfer in de VS: effect van bevolkingsdichtheid?
+#
+#########################################################################################
+
+Net als vele landen wordt de VS hard getroffen door de corona uitbraak. Aangezien het virus zich van persoon naar persoon verspreidt kun je je afvragen of het corona sterftecijfer (per 100 000 inwoners) van een staat binnen de VS afhankelijk is van de bevolkingsdichtheid (in aantal inwoners per km2). De gegevens voor 25 van de 52 staten (op peildatum 9 juni 2020) staan in de file Opgave_4.txt. Dit is een tab-separated ascii file met header.
+
+**a.** Lees de data in R in, en maak een goede scatterplot van het corona sterftecijfer als functie van de bevolkingsdichtheid. Let op de as-titels en eenheden!
+
+```{r}
+
+```
+
+
+
+Om te onderzoeken of er een (statistisch) verband is tussen sterftecijfer en bevolkingsdichtheid kun je in R lineaire regressie uitvoeren met het commando summary(lm(y ~ x)) waarbij y het sterftecijfer is, en x de bevolkingsdichtheid. Je fit dan een lijn  $y = a + b \cdot x$ door de grafiek;  $a$ een $b$ zijn de coëfficiënten van het regressiemodel.
+
+
+**b.** Voer lineaire regressie uit op de data. Wat is de waarde (“estimate”) van de as-afsnede (“intercept”) $a$, en wat is de waarde van de helling $b$?
+
+```{r}
+res <- summary(lm(Sterftecijfer ~ Inwonerdichtheid, data = myData))
+res
+a <- res$coefficients[1,1]
+b <- res$coefficients[2,1]
+cat("\n\nCoefficienten:\na = ",a,", b = ",b)
+```
+
+
+
+De uitvoer van lineaire regressie geeft meer dan alleen maar de coëfficiënten $a$ en $b$: het geeft ook de standaardfouten in $a$ en $b$ (“Std. Error”) en voert per coëfficiënt ook een t-toets uit met als hypotheses:
+
+- H0: de parameter is 0; 
+- H1: de parameter is niet 0
+
+De uitvoer van lineaire regressie geeft de t-waarde van deze toets (“t value”) en de p-waarde van de toets (“Pr(>|t|)”).
+
+
+**c.** Is de waarde van de helling $b$ significant anders dan 0? Toets met $\alpha = 0.05$.
+
+```{r}
+
+```
+
+
+
+**d.** Is er een significant verband tussen sterftecijfer en bevolkingsdichtheid?
+
+
+
+
+
+De effectsterkte van regressie wordt gegeven door de waarde van $R^2$ (“Multiple R-squared”): dit is de fractie van de variatie in de y-waarden die wordt “verklaard” door het regressiemodel (dus: de lijn). De interpretatie is gelijk aan die van $\eta^2$ bij een 1-way ANOVA.
+
+
+
+**e.** Wat is de effectsterkte van de bevolkingsdichtheid op het corona sterftecijfer? Heeft de bevolkingsdichtheid een klein, matig of sterk effect op het sterftecijfer?
+
+```{r}
+
+```
+
+
+
+**f.** Plot de gefitte regressielijn $y = a + b \cdot x$ in de grafiek van opgave **a.** Hint: gebruik de functie abline.
+
+```{r}
+
+```
+
+
+
+**g.** Wat zouden andere verklarende factoren voor het sterftecijfer kunnen zijn? Noem twee suggesties.
+
+
+
+
+
+
+
+
+#########################################################################################
+#
+## Opgave 5 - Clusteren van voedingsmiddelen
+#
+#########################################################################################
+
+
+**a.** Lees deze file in R in als dataframe. Wat is het gemiddelde aantal besmettingen, herstelden en doden per 100 000 inwoners? En wat is de gemiddelde fijnstofconcentratie?
+
+```{r}
+
+```
+
+
+
+**b.** Voer hiërarchische clustering uit op de landen op basis van de kolommen Confirmed, Recovered en Dead. Gebruik euclidische afstanden en “average” linkage. Maak een dendrogram van het resultaat.
+
+```{r}
+
+```
+
+
+
+**c.** Splits de cluster in 2 subclusters m.b.v. de functie cutree. Welke landen horen bij subcluster 1 en welke landen horen bij subcluster 2?
+
+```{r}
+
+```
+
+
+
+**d.** Toets of er een significant verschil zit in fijnstofconcentratie tussen de landen van subcluster 1 en van subcluster 2. Toets met $\alpha = 0.05$.
+
+```{r}
+
+```
+
+
+
+**e.** Voer k-means clustering uit op de landen op basis van de kolommen Confirmed, Recovered en Dead. Gebruik $k = 2$ clusters en gebruik 5 random startwaarden voor de clustercentra. Maak m.b.v. de speciale functie makeKMeansDendrogram (zie map “R functies” op Blackboard) een dendrogram van het resultaat.
+
+
+```{r}
+
+```
+
+
+
+**f.** Zijn de twee k-means clustering subclusters hetzelfde als de twee hierarchische subclusters bij **c.**?
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+#########################################################################################
+#
+## Opgave 6 - Analyse op DEG's (1)
+#
+#########################################################################################
+
+Om het effect van het Covid-19 coronavirus op de genexpressie van patiënten te onderzoeken wordt er van 6 personen die positief getest zijn op Covid-19 en van 6 personen die recentelijk negatief zijn getest met behulp van een 2-channel microarray de genexpressie van $G = 100$ genen bepaald. De resultaten staan in de file Opgave_6.txt. Dit is een tab-separated ascii file met header.
+
+Per microarray geven het rode (R) en groene (G) signaal de log-getransformeerde en background-gecorrigeerde intensiteiten van de geïnfecteerde en niet-geïnfecteerde personen weer. Signaal “R.3” is bijvoorbeeld de log intensiteit van een geïnfecteerd persoon gemeten met microarray 3.
+
+
+
+**a.** Lees de microarray data in R in als dataframe. Bekijk de structuur van de data.
+
+```{r}
+
+```
+
+
+
+**b.** Welke statistische toets is geschikt om direct dit dataframe te analyseren op de aanwezigheid van DEG's (differentially expressed genes)?
+
+
+
+
+
+**c.** Maak een eigen functie die de toets van **b.** uitvoert per regel van het dataframe met microarray data.
+
+```{r}
+
+```
+
+
+
+**d.** Voer deze functie uit per gen (= regel van het dataframe). Hoeveel en welke genen komen zonder multiple testing correctie differentieel tot expressie (d.w.z. zijn DEG’s)? Toets met $\alpha = 0.05$.
+
+```{r}
+
+```
+
+
+
+**e.** Pas nu FDR multiple testing correctie toe op de p-waarden. Hoeveel en welke genen komen na correctie differentieel tot expressie (d.w.z. zijn werkelijk DEG’s)? Toets met $\alpha = 0.05$.
+
+```{r}
+
+```
+
+
+
+**f.** Hoeveel vals positieve uitslagen verwacht je zonder multiple testing correctie?
+
+```{r}
+
+```
+
+
+
+**g.** Maak van de bij **e.** gevonden DEG’s een heatmap. Cluster zowel de genen als de samples o.b.v. euclidische afstand en average linkage. Gebruik een geschikt kleurenpalet.
+
+```{r}
+
+```
+
+
+
+
+
+#

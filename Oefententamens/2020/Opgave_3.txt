@@ -1,0 +1,26 @@
+Sterfte	Gouverneur
+Alabama	10.9	R
+Colorado	25.1	D
+Delaware	41.8	D
+District.of.Columbia	20.8	D
+Illinois	33.9	D
+Indiana	25.2	R
+Kansas	6.5	D
+Louisiana	43.4	D
+Maine	7.1	D
+Minnesota	15.8	D
+Mississippi	20.6	R
+Missouri	9.7	R
+New.York	84.3	D
+North.Carolina	8.4	D
+North.Dakota	2	R
+Oregon	3.6	D
+Rhode.Island	74.3	D
+South.Carolina	7.3	R
+Tennessee	4.6	R
+Texas	5.1	R
+Vermont	8.8	R
+Virginia	14.7	D
+West.Virginia	3.4	R
+Wisconsin	9.1	D
+Wyoming	0	R
