@@ -44,13 +44,15 @@ L <- c(129, 139, 124, 133, 135)
 a) Maak een histogram van deze data.
 
 ```{r}
-
+hist(L, xlab = "Lengte (cm)", ylab = "Frequentie", main = "Lengte van 10-jarige Groningers")
 ```
 
 b) Wat is de gemiddelde lengte, wat is de standaarddeviatie?
 
 ```{r}
-
+y.av <- mean(L)
+s <- sd(L)
+cat("gemiddelde:", y.av, "// standaardeviatie:", s)
 ```
 
 Plot een normaalverdeling met mu = y.av en sigma = s in de *genormaliseerde* histogram.

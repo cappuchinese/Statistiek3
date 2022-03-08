@@ -41,15 +41,15 @@ hist(L, xlab = "Lengte (cm)", ylab = "Frequentie", main = "Lengte van 10-jarige 
 b) Wat is de gemiddelde lengte, wat is de standaarddeviatie?
 
 ```{r}
-y.av = mean(L)
-s = sd(L)
+y.av <- mean(L)
+s <- sd(L)
 cat("Gemiddelde = ",y.av,", standaarddeviatie = ",s)
 ```
 
 c) Stel, we hadden *nog* meer data gehad:
 
 ```{r}
-L = c(129, 139, 124, 133, 135, 
+L <- c(129, 139, 124, 133, 135,
       120, 138, 133, 132, 128,
       129, 132, 133, 135, 134, 
       141, 134, 136, 131, 132,
@@ -69,8 +69,8 @@ Dit histogram lijkt op een normaalverdeling. In R kun je de kansverdeling plotte
 ```{r}
 mu <- 0
 sigma <- 1
-x = seq(-3, 3, 0.01)
-f = dnorm(x, 0, 1)
+x <- seq(-3, 3, 0.01)
+f <- dnorm(x, 0, 1)
 
 plot(x, f, xlab="y-waarde", ylab="Probability f(y)", type="l", col="red")
 ```
@@ -97,15 +97,13 @@ mu <- 130
 sigma <- 5
 
 # 1) Wat is de kans dat y kleiner is dan 125 cm?
-
-
+pnorm(125, mu, sigma)
 
 # 2) Wat is de kans dat y tussen 120 en 125 cm ligt?
-
-
+pnorm(125, mu, sigma) - pnorm(120, mu, sigma)
 
 # 3) Wat is de kans dat y groter is dan 140 cm?
-
+1 - pnorm(140, mu, sigma)
 
 
 ```
@@ -118,11 +116,10 @@ mu <- 130
 sigma <- 5
 
 # 1) Beneden welke lengte ligt 5% van alle data?
-
-
+qnorm(0.05, mu, sigma)
 
 # 2) Boven welke lengte ligt 5% van alle data?
-
+qnorm(0.95, mu, sigma)
 
 ```
 
@@ -133,18 +130,18 @@ Een 95% BetrouwbaarheidsInterval (= 95% BI) is het gebied van 95% rondom het gem
 mu <- 130
 sigma <- 5
 
-lower = qnorm(0.025, mu, sigma)
-upper = qnorm(0.975, mu, sigma)
+lower <- qnorm(0.025, mu, sigma)
+upper <- qnorm(0.975, mu, sigma)
 
 cat("95% BI = [", lower, ", ", upper,"] cm\n")
 ```
 
 ```{r}
 # Wat als je een andere zekerheid, bijv. 90% of 50% wilt?
-zekerheid = 0.50
+zekerheid <- 0.50
 
-lower = y.av + qnorm((1-zekerheid)/2,0,1)*s/sqrt(n)
-upper = y.av + qnorm(1-(1-zekerheid)/2, 0, 1)*s/sqrt(n)
+lower <- y.av + qnorm((1-zekerheid)/2,0,1)*s/sqrt(n)
+upper <- y.av + qnorm(1-(1-zekerheid)/2, 0, 1)*s/sqrt(n)
 
 cat("95% BI = [", lower, ", ", upper,"] cm\n")
 ```
@@ -160,7 +157,10 @@ L <- c(129, 139, 124, 133, 135)
 Gemiddelde en standaarddeviatie:
 
 ```{r}
-
+y.av <- mean(L)
+s <- sd(L)
+n <- length(L)
+cat("y.av =", y.av, "// sd =", s, "// length =", n)
 ```
 
 De verdeling van het gemiddelde y.av (dus NIET van de waarden y) heeft *bij benadering* een normaalverdeling met standaarddeviatie s/sqrt(n). Het 95% BI van het gemiddelde is dus *bij benadering* y.av + qnorm(c(0.025, 0.975), 0, 1) * s/sqrt(n). 
@@ -168,13 +168,14 @@ De verdeling van het gemiddelde y.av (dus NIET van de waarden y) heeft *bij bena
 d) Bereken de gemiddelde lengte van dit sample en bereken het benaderde 95% Betrouwbaarheidsinterval van dit gemiddelde.
 
 ```{r}
+BI <- y.av + qnorm(c(0.025, 0.975), 0, 1) * s/sqrt(n)
 
+cat("y.av =", y.av, "// 95% BI =", BI)
 ```
 
 e) Is het gemiddelde significant anders dan 135 cm?
 
-
-
+Nee, want 135 cm ligt *binnen* het 95% BI.
 
 
 De *exacte* verdeling van het gemiddelde y.av is een t-verdeling met df = n-1 degrees of freedom. De quantile functie van de t-verdeling is qt(p, df).
@@ -182,12 +183,11 @@ De *exacte* verdeling van het gemiddelde y.av is een t-verdeling met df = n-1 de
 f) Bereken de gemiddelde lengte van dit sample en bereken het exacte 95% Betrouwbaarheidsinterval van dit gemiddelde.
 
 ```{r}
+BI <- y.av + qt(c(0.025, 0.975), n-1) * s/sqrt(n)
 
+cat("y.av =", y.av, "// 95% BI =", BI)
 ```
 
 g) Is het gemiddelde significant anders dan 135 cm?
 
-
-
-
-
+Nee, want 135 ligt *binnen* het 95% BI.

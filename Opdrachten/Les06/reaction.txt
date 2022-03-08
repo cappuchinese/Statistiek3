@@ -1,0 +1,16 @@
+reaction.time	position
+0.21	staand
+0.17	staand
+0.18	staand
+0.25	staand
+0.13	staand
+0.42	zittend
+0.45	zittend
+0.37	zittend
+0.51	zittend
+0.48	zittend
+0.52	liggend
+0.55	liggend
+0.41	liggend
+0.45	liggend
+0.47	liggend
