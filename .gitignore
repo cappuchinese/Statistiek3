@@ -1,2 +1,4 @@
-.idea
+**.idea
 **Les0*_files/
+**__pycache__
+**venv
