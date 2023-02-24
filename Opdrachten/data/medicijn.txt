@@ -1,0 +1,11 @@
+"logR"	"logG"
+"Patient A"	-0.54	-2.51
+"Patient B"	0.52	-1.41
+"Patient C"	-1.64	-3.78
+"Patient D"	3.62	1.55
+"Patient E"	-3.31	-5.12
+"Patient F"	-2.52	-4.65
+"Patient G"	-1.64	-3.47
+"Patient H"	-5.79	-7.98
+"Patient I"	0.12	-2.14
+"Patient J"	-4.85	-6.67

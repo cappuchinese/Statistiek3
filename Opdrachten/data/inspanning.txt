@@ -1,0 +1,6 @@
+"logR"	"logG"
+"Persoon 1"	2.1	2.3
+"Persoon 2"	10.5	10.9
+"Persoon 3"	-2.1	-1.5
+"Persoon 4"	4.7	4.8
+"Persoon 5"	-8.1	-7.4
