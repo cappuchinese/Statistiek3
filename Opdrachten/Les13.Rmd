@@ -1,0 +1,283 @@
+---
+title: "Stat3_BIN_Les13_FS_v4"
+author: "Emile Apol"
+date: "3/30/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+###############################################################################
+#
+# Statistiek 3 BIN
+#
+# 2019-2020
+#
+# Emile Apol 
+#
+# Les 13 - Clustering 2
+#
+###############################################################################
+
+
+###############################################################################
+#
+# Voorbeeld 13.1 - Kleurpalet in R
+#
+###############################################################################
+
+a) Maak een eigen kleurpalet van groen via zwart naar rood.
+
+```{r}
+MA.color <- function(n=11){
+  colorRampPalette(c("green", "black", "red"), space = "rgb")(n)
+}
+```
+```{r}
+x <- -10:10
+X <- matrix(x, ncol = 1)
+image(X, col = MA.color(21))
+```
+
+
+b) Maak een eigen kleurpalet van groen via wit naar rood.
+
+
+```{r}
+
+```
+
+
+Dit zijn twee kleurpaletten die niet vriendelijk zijn voor mensen met een vorm van kleurenblindheid.
+
+c) Maak een eigen kleurpalet van blauw via wit naar rood.
+
+
+```{r}
+
+```
+
+d) Maak een eigen kleurpalet van blauw via zwart naar rood.
+
+
+```{r}
+
+```
+
+
+e) Maak een eigen kleurpalet van blauw via wit naar oranje.
+
+
+```{r}
+
+```
+
+f) Maak een eigen kleurpalet van blauw via zwart naar oranje.
+
+
+```{r}
+
+```
+
+
+
+###############################################################################
+#
+# Voorbeeld 13.2 - 4 genen en 3 samples
+#
+###############################################################################
+
+```{r}
+myData <- data.frame(M.1 = c(8.0, 7.0, 6.0, 2.0),
+                     M.2 = c(8.0, 8.0, 6.0, 3.0),
+                     M.3 = c(2.0, 7.0, 7.0, 8.0))
+rownames(myData) <- paste0("Gene ",LETTERS[1:4])
+myData
+```
+
+a) Maak m.b.v. de functie matplot (en evt. matlines) een grafiek van het gedrag van elk gen als functie van sample. Tip: Maak eerst een grafiek zonder assen, en maak daarna apart elke as.
+
+```{r}
+
+```
+
+
+
+
+b) Cluster deze genen o.b.v. Euclidische afstand en "average" linkage. Maak een dendrogram. Hint: het de optie hang=-1 kun je het dendrogram mooier maken, door de "takken" door te laten trekken tot de basis.
+
+
+```{r}
+
+```
+
+c) Maak een goede heatmap van deze data. Kies een geschikt kleurpalet. Cluster de genen en de samples o.b.v. Euclidische afstanden en "average" linkage.
+
+```{r}
+
+```
+
+
+d) Cluster deze genen o.b.v. absolute Pearson afstand en "average" linkage. Maak een dendrogram. Hint: het de optie hang=-1 kun je het dendrogram mooier maken, door de "takken" door te laten trekken tot de basis.
+
+```{r}
+
+```
+
+
+e) Maak een goede heatmap van deze data. Kies een geschikt kleurpalet. Cluster de genen en de samples o.b.v. absolute Pearson afstanden en "average" linkage.
+
+
+```{r}
+
+```
+
+
+f) Maak een goede heatmap van deze data. Kies een geschikt kleurpalet. Cluster ALLEEN de genen eo.b.v. absolute Pearson afstanden en "average" linkage.
+
+```{r}
+
+```
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 13.3 - Broodbeleg (1)
+#
+###############################################################################
+
+Van bijna al onze etenswaren staat op het etiket de nutrientensamenstelling vermeld. Dit bestaat o.a. uit de hoeveelheid eiwit, suikers, zetmeel, vetten, vezels en natrium per 100 g product. In deze opgave gaan we verschillende soorten broodbeleg (jam, kaas, vlees, vlokken, hagelslag etc.) vergelijken en clusteren op basis van nutrientensamenstelling.
+
+De dataset “Broodbeleg_1.txt” bevat voor 27 verschillende producten o.a. de waarden van de 7 eigenschappen:
+
+  eiwit        = g eiwit per 100 g product
+  kool.suiker  = g suiker per 100 g product
+  kool.anders  = g overige koolhydraten (zetmeel) per 100 g product
+  vet.vz       = g verzadigd vet per 100 g product
+  vet.ov       = g onverzadigd vet per 100 g product
+  vez          = g voedingsvezels per 100 g product
+  Na           = g natrium per 100 g product
+  
+Daarnaast is er o.a. nog een kolom Omschrijving die aangeeft welk product het is (met fabrikant).
+
+a) Lees in R deze tab-separated dataset met header in als dataframe myData.
+
+```{r}
+
+```
+
+
+b) Maak uit dataframe myData een nieuw dataframe M door alleen de 7 bovengenoemde nutrienten (eiwit, kool.suiker, ..., Na) te selecteren, en de "Omschrijving" als rownames te gebruiken. NB. Het is belangrijk om de juiste rownames in het dataframe te hebben wat je wilt gaan clusteren, zodan in het dendrogram elk item duidelijk herkanbaar is!
+
+
+```{r}
+
+```
+
+c) Maak van dataframe M een heatmap waarbij je zowel de producten als de nutrienten clustert. Gebruik Euclidische afstanden en "average" linkage". Gebruik een geschikt kleurpalet.
+
+```{r}
+
+```
+
+d) Er lijkt sprake te zijn van twee subclusters van producten, zie ook Voorbeeld 12.5. Als je kijkt naar de heatmap, waarin verschillen deze twee subclusters dan vooral?
+
+
+
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 13.4 - Microarray experiment met 3 zoogdiersoorten
+#
+###############################################################################
+
+In een microarray experiment worden de genexpressies van 3 verschillende zoogdieren (varken = PIG, hond = DOG, en koe = COW) onder stress bepaald. Er worden 4 varkens, 4 honden en 5 katten onderzocht met in totaal 13 dual channel chips, telkens ten opzichte van een vast referentie sample (= stressloos). Voor iedere chip zijn de intensiteiten gecorrigeerd voor de achtergrond, is een log-transformatie toegepast, zijn de log fold-changes M = log2(R/G) bepaald ten opzichte van de stressloze referentie (G), en zijn de data genormaliseerd, d.w.z. gecorrigeerd voor eventuele bias. Het resultaat is een file met daarin voor 2000 genen de log fold-changes M.ik voor soorten i (= PIG, DOG, COW) en replica’s k (= 1..4, 1…4 en
+1…5), dus als kolommen:
+
+PIG.1 PIG.2 PIG.3 PIG.4 DOG.1 … DOG.4 COW.1 … COW.5
+
+Deze data staan in de tab-separated file “MA_mammals.txt”, die een header heeft en de gen-namen als rownames. We willen graag weten of er tussen deze 3 soorten zoogdieren verschillen zijn in de genexpressie ten gevolge van stress.
+
+
+a) Lees in R deze tab-separated dataset met header in als dataframe myData.
+
+```{r}
+
+```
+
+b) Wat voor soort statistische toets is geschikt om voor deze data te bepalen of er een significant verschil is in expressie tussen de 3 zoogdiersoorten. Leg uit.
+
+
+
+
+c) Maak in R een eigen functie die per gen (= regel in je dataframe) een p-waarde uitrekent voor de toets die je bij b. hebt bedacht.
+
+```{r}
+
+```
+
+d) Voer de toets uit met alpha = 0.05. Hoeveel genen zijn significant? Welke genen zijn dit?
+
+```{r}
+
+```
+
+e) Hoeveel vals positieve uitslagen verwacht je in dit geval?
+
+
+
+
+f) Voer een multiple testing correctie uit op de p-waarden. Gebruik hiervoor de FDR-methode. Hoeveel genen zijn significant? Welke genen zijn dit?
+
+```{r}
+
+```
+
+g) Maak een nieuw dataframe MA.DEG met daarin alléén de bij f. gevonden significante genen (DEG’s).
+
+```{r}
+
+```
+
+h) Voer een hiërarchische clustering uit op de significante genen (DEG’s) op basis van de 13 samples. Gebruik “euclidean” afstanden en “average” linkage. Maak via plot een dendrogram. Je kunt de grootte van de labels eventueelaanpassen via cex. Pas de uitlijning van de labels aan via hang=-1.
+
+```{r}
+
+```
+
+
+i) Maak met de functie cutree vier subclusters (zie ppt van Les 13). Wat zijn de gen-namen in elke subcluster?
+
+```{r}
+
+```
+
+
+j) Maak een goede heapmap van de DEG's. Gebruik “euclidean” afstanden en “average” linkage. Kies een geschikt kleurpalet.
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

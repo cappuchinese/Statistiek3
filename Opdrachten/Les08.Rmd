@@ -1,0 +1,220 @@
+---
+title: "Stat3_Les08_FS_v4"
+author: "Emile Apol"
+date: "10-3-2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+###############################################################################
+#
+# Statistiek 3 BIN
+#
+# 2019-2020
+#
+# Emile Apol 
+#
+# Les 08 - Differentially Expressed Genes (DEGs) 1
+#
+###############################################################################
+
+
+
+###############################################################################
+#
+# Voorbeeld 8.1 - Gewicht van kuikens
+#
+###############################################################################
+
+In de R dataset "chickwts" staan de gewichten (variabele "weight") van kuikens van 6 weken (in eenheden van 10 gram) als functie van een aantal soorten voedings-supplement (variabele "feed").
+
+
+```{r}
+data(chickwts)
+head(chickwts)
+str(chickwts)
+attach(chickwts)
+```
+
+a) Maak een (box)plot van weight als functie van feed. NB. Via de optie las=2 in plot kun je de labels langs de assen allemaal loodrecht op de assen zetten.
+
+```{r}
+
+```
+
+b) Voer in R een 1-way ANOVA uit om te onderzoeken of het gewicht na 6 week (weight) significant wordt beïnvloed door het soort voedingssupplement (feed). Toets met alpha = 0.05.
+
+```{r}
+
+```
+
+
+c) Voer een (Fisher) LSD post-hoc test uit (d.w.z. paarsgewijze t-toetsen zonder correctie!) om te zien welke soorten voeding significant verschillende gewichten opleveren. Toets met alpha = 0.05. Welke “homogene subsets” zijn er, d.w.z. welke sets van feed geven hetzelfde gewicht? Je kunt gebruik maken van de functie "postHocHomSubsets" in de file "Homogeneous_subsets_v1".
+
+```{r}
+
+```
+
+d) Voer ook een Tukey HSD post-hoc test uit om te zien welke soorten voeding significant verschillende gewichten opleveren. Toets met alpha = 0.05. Welke “homogene subsets” zijn er?
+
+```{r}
+
+```
+
+e) Voer tenslotte ook een Bonferroni post-hoc test uit om te zien welke soorten voeding significant verschillende gewichten opleveren. Toets met alpha = 0.05. Welke “subsets” zijn er?
+
+```{r}
+
+```
+
+f) Vergelijk de 𝑝𝑝-waarden die uit de 3 methoden komen (Fisher LSD, Tukey HSD, Bonferroni). Vergelijk de verschillende “subsets” van feed ook met de boxplot uit opgave a.
+
+
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 8.2 - Differentiele genexpressie (1)
+#
+###############################################################################
+
+We willen graag weten welke genen differentieel tot expressie komen bij een bepaalde vorm van kanker. Bij twee samples (controle en kankercellen) is mRNA geïsoleerd. Beide samples worden m.b.v. een 2-channel microarray experiment geanalyseerd (R = kanker, G = controle), met 5 replica’s (= 5 verschillende array’s) met elk spots voor 100 genen. De data zijn op een juiste manier gepreprocessed: d.w.z. background correctie, normalisatie en logtransformatie, met als resultaat de log expressie ratio
+
+        M_(g,i) = log2(R_(g,i)) - log2(G_(g,i)) = log2(R_(g,i) / G_g,i))
+
+voor gen g (= 1 t/m 100) en replica i (= 1 t/m 5). In de file DEG_1.txt zijn per gen de resultaten van de 5 replica’s verzameld.
+
+a) Lees in R deze data in als dataframe genes1, en houd rekening met het feit dat in de text file rij- en kolomnamen staan, en tab de field separator is:
+         read.table(“DEG_1.txt”, sep = ”\t”, header = T)
+Print de vector met rijnamen en de vector met kolomnamen.
+
+```{r}
+
+```
+
+b) Voer per gen (= rij van genes1) een 1-sample t-toets uit om te kijken of er sprake is van differentiële expressie, d.w.z. of de gemiddelde log expressie ratio significant anders is dan 0. Gebruik de functie apply en een zelfgemaakte t-toets functie. Verzamel alle p-waarden in een vector pVec. Geef aan hoeveel en welke genen differentieel tot expressie komen. Toets met alpha = 0.05 en voer géén multiple-toetsingscorrectie uit.
+
+```{r}
+
+```
+
+
+De waarden in de file DEG_1.txt zijn gemaakt als 500 random normaalverdeelde waarden met mu = 0 en sigma = 2.5. Er zijn dus in het echt GEEN genen die differentiëel tot expressie komen.
+
+c) Leg uit waarom je bij b. toch een aantal significante genen vindt.
+
+
+Er zijn verschillende multiple-toetsingscorrecties die je in R kunt gebruiken, zoals de Bonferroni en Holm (= Holm-Bonferroni) en False Discovery Rate (FDR) methoden.
+
+d) Voer op de p-waarden (pVec) een Bonferroni correctie uit met alpha = 0.05. Geef aan hoeveel en welke genen differentieel tot expressie komen.
+
+```{r}
+
+```
+
+e) Voer op de p-waarden (pVec) een Holm correctie uit met alpha = 0.05. Geef aan hoeveel en welke genen differentieel tot expressie komen.
+
+```{r}
+
+```
+
+
+f) Voer op de p-waarden (pVec) een FDR correctie uit met alpha = 0.05. Geef aan hoeveel en welke genen differentieel tot expressie komen.
+
+```{r}
+
+```
+
+
+
+In de file DEG_2.txt staan de resultaten van 10 000 genen, waarvan er in het echt geen enkele differentieel tot expressie komt.
+
+g) Lees de data in als dataframe "genes2", en bereken de vector met p-waarden voor de ongecorrigeerde 1-sample t-toetsen. Geef aan hoeveel genen differentieel tot expressie komen. Klopt dit met wat je verwacht als aantal vals positieven? 
+
+```{r}
+
+```
+
+h) Voer nu opnieuw de Bonferroni, de Holm en de FDR correcties uit op deze 𝑝𝑝-waarden. Hoeveel genen zijn er nu bij deze drie methoden significant?
+
+```{r}
+
+```
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 8.3 - Differentiele genexpressie (2)
+#
+###############################################################################
+
+
+In een 2-channel microarray experiment met 5 replica’s (i = 1..5), zoals beschreven in Voorbeeld 8.2, wordt gekeken of er bepaalde genen differentieel tot expressie komen, als je kankercellen en gezonde cellen vergelijkt. De gecorrigeerde, log-getransformeerde R- en G-waarden staan per gen g (1 t/m 100) als volgt in de ascii file DEG_3.txt met tabs als scheiding.
+
+a) Lees in R deze data in als dataframe "genes3", en bekijk de structuur van dit dataframe.
+
+```{r}
+
+```
+
+
+b) Bereken voor elke replica een vector met de M_(g,i) = log2(R_(g,i)/G_(g,i)) = log2(R_(g,i)) - log(G_(g,i)) waarden, en combineer deze kolommen tot een nieuw dataframe genes4. Zorg voor juiste rij- en kolomnamen.
+
+```{r}
+
+```
+
+
+c) Voer op genes4 per gen (= rij) een 1-sample t-toets uit om te zien welke genen differentieel tot expressie komen. Verzamel de p-waarden in een vector. Gebruik de functie apply en een zelfgemaakte functie om de p-waarde van een 1-sample t-toets per rij van een matrix te berekenen (zie Voorbeeld 8.2.b). Hoeveel en welke genen zijn significant? Toets met alpha = 0.05 zonder multiple testing correctie.
+
+```{r}
+
+```
+
+
+d) Corrigeer deze vector met p-waarden m.b.v. de Bonferroni en  Holm methode. Hoeveel en welke genen zijn nu significant? Toets met alpha.F = 0.05.
+
+```{r}
+
+```
+
+
+e) Programmeer in R een eigen functie die voor een rij (= gen) van dataframe genes3 de p-waarde van een gepaarde t-toets berekent. Tip: het aantal paren is de helft van de rijlengte.
+
+```{r}
+
+```
+
+f) Voer op genes3 per gen (= rij) een gepaarde t-toets uit om te zien welke genen differentieel tot expressie komen. Verzamel de p-waarden in een vector. Gebruik de functie apply en de zelfgemaakte functie van e. om de p-waarde van een gepaarde t-toets per rij van een matrix te berekenen. Gebruik geen multiple testing correctie. Hoeveel en welke genen zijn significant? Toets met alpha.F = 0.05.
+
+```{r}
+
+```
+
+
+g) Corrigeer deze vector met p-waarden m.b.v. de Bonferroni en Holm methode. Hoeveel en welke genen zijn nu significant? Toets met alpha.F = 0.05.
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+

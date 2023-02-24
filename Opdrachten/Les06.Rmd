@@ -48,12 +48,7 @@ Data: Gegevens van 256 voedingsmiddelen per 100g product:
 a) Lees de file Les06_Voedingsmiddelen_db_v1.txt in. Dit is een tab-delimited text file MET header.
 
 ```{r}
-setwd(dir = "H:/Hanze/ILST/vakken/kwartaal 07/Statistiek 3 BIN/lessen/2019-2020/Les 06 - 1-way ANOVA")
-getwd()
-dir()
-
-myData <- read.table(file = "Les 06_Voedingsmiddelen_db_v1.txt", header = T, sep = "\t")
-myData
+myData <- read.table(file = "data/Voedingsmiddelen.txt", header = T, sep = "\t")
 ```
 
 
@@ -117,7 +112,7 @@ Je ziet dat R ALLE levels van de originele factor type aanhoudt bij het plotten.
 
 ```{r}
 TEMP <- myData[(myData$type == "chips" | myData$type == "chocolade"), ]
-TEMP$type <- droplevels(TEMP$type)
+# TEMP$type <- droplevels(TEMP$type)
 boxplot(H.kcal ~ type, data = TEMP,
         xlab = "Voedseltype", ylab="Energie-waarde (kcal/100 g)")
 ```
@@ -127,7 +122,7 @@ Verwijder overtollige levels en maak een boxplot van deze data.
 
 ```{r}
 myData2 <- myData[myData$type %in% c("brood", "chips", "chocolade", "groente", "kaas", "taart"), ]
-myData2$type <- droplevels(myData2$type)
+# myData2$type <- droplevels(myData2$type)
 boxplot(H.kcal ~ type, data=myData2, xlab = "Voedseltype", ylab="Energie-waarde (kcal/100 g)")
 ```
 
@@ -162,11 +157,7 @@ Onze lichaamshouding schijnt op verschillende processen invloed te hebben (Vroon
 a) Lees de data in:
 
 ```{r}
-getwd()
-setwd("H:/Hanze/ILST/vakken/kwartaal 07/Statistiek 3 BIN/lessen/2019-2020/Les 06 - 1-way ANOVA")
-dir()
-myData <- read.table("Les06_reaction_2.txt", header=T)
-myData
+myData <- read.table("data/reaction.txt", header=T)
 ```
 
 
@@ -215,14 +206,14 @@ cat("Effectsterkte: eta2 = ",eta2,"\n")
 g) De Bonferroni post-hoc test na een 1-way ANOVA een pairwise.t.test met Bonferroni correctie. Voor het uitzoeken welke groepen (= levels) significant verschillen kun je de speciale R-functie "Homogeneous_subsets_v1.r" uit de BB-folder "Speciale R functies" gebruiken. Deze file kun je sourcen.
 
 ```{r}
-source("Homogeneous_subsets_v1.r")
+source("data/Homogeneous_subsets.r")
 ```
 
 Gebruik nu de functie postHocHomSubsets om de Bonferroni post-hoc test uit te voeren.
 
 ```{r}
-postHocHomSubsets(y = myData$reaction.time, g = myData$position, 
-                  p.adjust.method = "bonferroni", alpha=0.05)
+# postHocHomSubsets(y = myData$reaction.time, g = myData$position,
+#                   p.adjust.method = "bonferroni", alpha=0.05)
 ```
 
 

@@ -1,0 +1,289 @@
+---
+title: "Stat3_Les07_FS_v4"
+author: "Emile Apol"
+date: "9-3-2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+###############################################################################
+#
+# Statistiek 3 BIN
+#
+# 2019-2020
+#
+# Emile Apol 
+#
+# Les 07 - 1-way ANOVA en gepaarde t-toets
+#
+###############################################################################
+
+
+
+###############################################################################
+#
+# Voorbeeld 7.1 - Genexpressie in twee soorten tumoren
+#
+###############################################################################
+
+
+De RNA expressie van een bepaald gen, dat wordt verdacht van betrokkenheid bij twee vormen van kanker, werd bij 18 personen bepaald: 6 gezonde mensen (control), 6 patiënten met de eerste vorm van kanker (tumor.1) en 6 patiënten met de tweede vorm (tumor.2). De data staan in de text file "Les07_expression_2.txt"; deze file is tab-separated en heeft een header.
+
+a) Lees de data in.
+
+```{r}
+
+```
+
+
+b) Maak een boxplot van genexpressie als functie van het sample = tumorstadium.
+
+```{r}
+
+```
+
+
+
+
+c) Welke analyse is geschilt om te onderzoeken of de genexpressie significant afhangt van het tumorstadium?
+
+
+
+
+
+d) Onderzoek of de genexpressie significant afhangt van het tumorstadium. Toets met alpha = 0.05.
+
+```{r}
+
+```
+
+p-waarde < 0.05, dus (net) een significant verschil tussen de drie groepen!
+
+
+e) Wat is de effecsterkte eta^2?
+
+```{r}
+
+```
+
+
+
+f) Voer een Bonferroni post-hoc toets uit.
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+
+
+
+g) Voer een Tukey post-hoc toets uit.
+
+```{r}
+
+```
+
+
+
+
+
+h) Voer een FDR post-hoc toets uit.
+
+```{r}
+
+```
+
+
+
+i) Hoe zou je deze inconsistentie tussen ANOVA en post-hoc toetsen kunnen verhelpen?
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 7.2 - Opbrengst product en NaOH gebruik
+#
+###############################################################################
+
+Een fabriek produceert een bepaald medicijn. Voor de reactie is ook NaOH als katalysator nodig. Hoewel NaOH een niet erg dure stof is, komt toch de vraag van het management hoeveel NaOH werkelijk nodig is om toch een hoge concentratie van het product (= medicijn, in mM) te krijgen. Onder leiding van de chemisch technoloog wordt een aantal experimenten uitgevoerd, waarbij de concentratie NaOH wordt gevarieerd (0.1 M, 0.5 M, 1.0 M en 1.5 M) en de uiteindelijke concentratie product wordt bepaald. Voor elke NaOH concentratie wordt 5 maal een batch gemaakt. De resultaten zijn staan in het onderstaande dataframe.
+
+```{r}
+myData <- data.frame(medicijn = c(11.7, 13.8, 17.4, 16.9, 15.5, 
+                                  15.8, 17.9, 21.1, 18.8, 17.5, 
+                                  39.7, 34.4, 39.7, 41.0, 35.9, 
+                                  41.3, 43.2, 38.3, 36.7, 42.1),
+                     NaOH = factor(c(rep("0.1 M",5), rep("0.5 M",5), rep("1.0 M",5), rep("1.5 M",5))))
+```
+
+a) Maak een boxplot van concentratie medicijn (in mM) als functie van de concentratie NaOH.
+
+```{r}
+
+```
+
+b) Wat voor statistische toets is geschikt om uit te zoeken of de concentratie van het product afhangt van de NaOH concentratie?
+
+
+
+
+c) Hangt de concentratie van het product af van de NaOH concentratie? Toets met alpha = 0.05.
+
+```{r}
+
+```
+
+p = 1.09e-11 << 0.05 = alpha, dus NaOH concentratie heeft een significant effect op de concentratie medicijn.
+
+d) Wat is de effectsterkte? Is het effect van NaOH op de concentratie medicijn zwak, matig of sterk?
+
+```{r}
+SS.A <- res[[1]]$Sum[1]
+SS.tot <- sum(res[[1]]$Sum)
+eta2 <- SS.A / SS.tot
+cat("Effectsterkte: eta2 = ",eta2,"\n")
+```
+
+De effectsterkte eta2 = 0.96 >>> 0.14, dus NaOH concentratie heeft een heel sterk effect op de concentratie medicijn.
+
+e) Als er een significant effect is, welke NaOH concentraties geven dan een significant verschillend resultaat? Toets met alpha = 0.05. Vergelijk de Bonferroni methode met de Tukey en fdr methoden.
+
+```{r}
+setwd("E:/Hanze/ILST/vakken/kwartaal 07/Statistiek 3 BIN/lessen/2019-2020/Les 07 - 1-way ANOVA/")
+source("Homogeneous_subsets_v1.r")
+```
+
+```{r}
+
+```
+
+
+
+```{r}
+
+```
+
+
+
+```{r}
+
+```
+
+
+
+
+f) Om een zo hoog mogelijke concentratie product te krijgen, wat zou jij het management adviseren over de te gebruiken NaOH concentratie?
+
+				
+
+
+
+###############################################################################
+#
+# Voorbeeld 7.3 - Deeltjesgrootte van poeders
+#
+###############################################################################
+
+De grootte van poederdeeltjes is een belangrijke eigenschap  die o.a. het stromingsgedrag en de “kleverigheid” van poeders bepaalt. De gemiddelde grootte kan gemeten worden door laserdiffractie (Fraunhofer diffractie) of door optical imaging. We willen graag kijken of de resultaten van beide meetmethoden dezelfde resultaten geven of dat er toch een (systematisch) verschil is, d.w.z. een bias. Om dit te onderzoeken wordt voor vijf poedermonsters (samples) telkens de gemiddelde deeltjesgrootte (in mu) bepaald met beide methoden. De resultaten staan in het volgende dataframe.
+
+```{r}
+myData <- data.frame(sample = rep(1:5, 2),
+                     grootte = c(211, 145, 142, 215, 145, 
+                                 279, 214, 185, 300, 175),
+                     methode = factor(c(rep("Laser diffractie", 5), rep("Optical imaging", 5))))
+```
+
+a) Maak een boxplot van deeltjesgrootte als functie van de meetmethode.
+
+```{r}
+
+```
+
+b) Leg uit waarom een gepaarde t-toets het meest geschikt is om uit te zoeken of beide meetmethoden een verschil in deeltjesgrootte opleveren.
+
+
+
+c) Geven beide meetmethoden een significant verschil in deeltjesgrootte? Toets met alpha = 0.05.
+
+```{r}
+
+```
+
+
+
+d) Bereken de effectsterkt, d.w.z. Cohen's d.av = (y.av.1 - y.av.2)/sqrt((var.1+var.2)/2). Is het verschil tussen beide methoden klein. matig of sterk?
+
+```{r}
+
+```
+
+
+
+e) Wat zou de uitkomst van de analyse zijn als je een Welch t-toets zou hebben gebruikt? Probeer het verschil te verklaren.
+
+```{r}
+
+```
+
+
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 7.4 - Stress en oogknipperen
+#
+###############################################################################
+
+Volgens een theorie uit de psychologie heeft stress invloed op het (onbewuste) oogknipperen: de hypothese is dat mensen door stress minder knipperen (en er tussen twee knipperingen dus meer tijd zit), zie Vroon (1995, p. 73). Om dit te testen werden bij 5 beroemde zangers video-opnamen geanalyseerd: er werd in ontspannen situaties en in situaties met stress gemeten hoeveel tijd (in sec) er (gemiddeld) zat tussen twee oogknipperingen. De resultaten staan in het volgende dataframe.
+
+```{r}
+myData <- data.frame(persoon = factor(c("Ali B.", "Beyonce K.", "Christina A.", "David. B.", "Enrique I.")),
+                     tijd = c(5.4, 7.7, 6.1, 8.2, 6.6, 
+                              3.3, 5.5, 3.5, 6.5, 4.7),
+                     stressniveau = factor(c(rep("gestresst", 5), rep("ontspannen", 5))))
+```
+
+a) Maak een goed boxplot van tijd tussen knipperen als functie van stressniveau.
+
+```{r}
+
+```
+
+
+b) Wat voor statistische toets is geschikt om uit te zoeken of stress inderdaad leidt tot een significante verlenging van de tijd tussen twee knipperingen?
+
+
+
+c) Leidt stress inderdaad tot een significante verlenging van de tijd tussen twee knipperingen? Toets met alpha = 0.05.
+
+```{r}
+
+```
+
+
+
+d) Wat is de effectsterkte van stress op oogknipperen?
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,408 @@
+---
+title: "Stat3_les11_FS_v4"
+author: "Emile Apol"
+date: "3/26/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+###############################################################################
+#
+# Statistiek 3 BIN
+#
+# 2019-2020
+#
+# Emile Apol 
+#
+# Les 11 - Differentially Expressed Genes (DEGs) 4
+#
+###############################################################################
+
+
+
+###############################################################################
+#
+# Voorbeeld 11.0 - Gepaarde t-toets en block ANOVA
+#
+###############################################################################
+
+Stel, we hebben log expressie data E_(i,j) van een dier voor een bepaald gen bij 2 verschillende toestanden i: als het dier slaapt of inspanning levert. Per toestand hebben we per dier 1 meting van de log expressie E, maar er zijn 5 verschillende dieren j gebruikt: een koe, een geit, een hond, een paard en een mens. 
+
+De vraag is: Is er (significant) verschil in genexpressie tussen de 2 toestanden? De data in "wide" format (zie ook voor uitleg over stack/unstack de ppt en Voorbeelden 11.4 en 11.5):
+
+```{r}
+E <- c(2.1, 3.0, 4.1, 3.5, 7.0, 
+       3.8, 4.9, 6.0, 5.6, 9.0)
+dier <- c("koe", "geit", "hond", "paard", "mens")
+toestand <- c("slaap", "inspanning")
+
+myData.wide <- data.frame(matrix(E, ncol = length(toestand)))
+rownames(myData.wide) <- dier
+colnames(myData.wide) <- toestand
+myData.wide
+```
+
+a) Maak een boxplot van de log genexpressie E als functie van de toestand.
+
+```{r}
+boxplot(myData.wide, xlab = "Toestand", ylab = "Log genexpressie")
+```
+
+b) Zet de data via de functie "stack" om van "wide" naar "long" format (zie ook de ppt en Voorbeelden 11.4 en 11.5), d.w.z. een kolom met E-waarden, een kolom met factor A (= toestand) en een kolom B (=diersoort).
+
+```{r}
+myData.long <- stack(myData.wide)
+colnames(myData.long) <- c("y", "A")
+a <- ncol(myData.wide)
+b <- nrow(myData.wide)
+B <- factor(rep(rownames(myData.wide), a))
+myData.long <- cbind(myData.long, "B" = B)
+myData.long
+```
+
+c) Maak op basis van dit "long" format dataframe een boxplot van de log genexpressie E als functie van de toestand.
+
+```{r}
+boxplot(y ~ A, data = myData.long, xlab = "Toestand", ylab = "Log genexpressie")
+```
+
+
+
+d) Voer een Welch t-toets uit om te onderzoeken of de log genexpressie afhangt van de toestand. Toets met alpha = 0.05.
+
+
+```{r}
+( fit.Welch <- t.test(y ~ A, data=myData.long) )
+```
+
+
+
+
+e) Voer een gepaarde t-toets uit om te onderzoeken of de log genexpressie afhangt van de toestand. Toets met alpha = 0.05.
+
+```{r}
+( fit.gepaard <- t.test(y ~ A, data = myData.long, paired = T) )
+```
+
+
+
+
+f) Voer een "block ANOVA" uit om te onderzoeken of de log genexpressie afhangt van de toestand. Toets met alpha = 0.05.
+
+```{r}
+( fit.block <- summary(aov(y ~ A + B, data = myData.long)) )
+```
+
+
+
+g) Verklaar waarom de Welch t en gepaarde t = block ANOVA zulke verschillende resultaten geven.
+
+
+
+
+h) Haal de juiste p-waarde (d.w.z. de p-waarde van factor A) uit de block ANOVA analyse.
+
+
+```{r}
+
+
+```
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 11.1 - Block ANOVA
+#
+###############################################################################
+
+Stel, we hebben log expressie data E_(i,j) van een dier voor een bepaald gen bij 3 verschillende toestanden i: als het dier slaapt, wakker is, of inspanning levert. Per toestand hebben we per dier 1 meting van de log expressie E, maar er zijn 5 verschillende dieren j gebruikt: een koe, een geit, een hond, een paard en een mens. 
+
+De vraag is: Is er (significant) verschil in genexpressie tussen de 3 toestanden? De data in "wide" format (zie ook voor uitleg over stack/unstack de ppt en Voorbeelden 11.4 en 11.5):
+
+```{r}
+E <- c(2.1, 3.0, 4.1, 3.5, 7.0, 
+       2.8, 3.7, 4.7, 4.2, 7.9, 
+       3.8, 4.9, 6.0, 5.6, 9.0)
+dier <- c("koe", "geit", "hond", "paard", "mens")
+toestand <- c("slaap", "wakker", "inspanning")
+
+myData.wide <- data.frame(matrix(E, ncol = length(toestand)))
+rownames(myData.wide) <- dier
+colnames(myData.wide) <- toestand
+myData.wide
+```
+
+a) Maak een boxplot van de log genexpressie E als functie van de toestand.
+
+```{r}
+
+```
+
+
+b) Zet de data via de functie "stack" om van "wide" naar "long" format (zie ook de ppt en Voorbeelden 11.4 en 11.5), d.w.z. een kolom met E-waarden, een kolom met factor A (= toestand) en een kolom B (=diersoort).
+
+```{r}
+
+```
+
+
+c) Maak op basis van dit "long" format dataframe een boxplot van de log genexpressie E als functie van de toestand.
+
+```{r}
+
+```
+
+
+
+
+d) Voer een 1-way ANOVA uit om te onderzoeken of de log genexpressie afhangt van de toestand. Toets met alpha = 0.05.
+
+
+```{r}
+
+```
+
+
+
+
+e) Voer een block ANOVA uit om te onderzoeken of de log genexpressie afhangt van de toestand. Toets met alpha = 0.05.
+
+```{r}
+
+```
+
+
+
+f) Verklaar waarom de 1-way en block ANOVA zulke verschillende resultaten geven.
+
+
+
+
+g) Haal de juiste p-waarde (d.w.z. de p-waarde van factor A) uit de block ANOVA analyse.
+
+
+```{r}
+
+```
+
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 11.2 - Conversion (yield) of a chemical reaction
+#
+###############################################################################
+
+A pharmaceutical company wants to produce a new drug, but is not sure about the optimal reaction temperature. To find out, a researcher does the synthesis of the drug at 5 different temperatures: 10 oC, 30 oC, 50 oC, 70 oC and 100 oC. The reactants must be made per batch. He wants to do 5 measurements of the yield per temperature. However, because there is only enough reactants for 5 experiments per batch, the researcher decides to run the total experiment with 5 different batches of reactants, and use “batch” as a blocking (“noise”) factor. The results are as follows (in "wide" format):
+
+```{r}
+T10 <- c(5.1, 13.7, 28.8, 5.4, 50.8)
+T30 <- c(17.5, 25.5, 40.6, 16.9, 62.6)
+T50 <- c(25.1, 32.2, 46.8, 25.7, 70.4)
+T70 <- c(37.4, 54.1, 60.1, 37.1, 83.1)
+T100 <- c(24.6, 34.1, 47.3, 25.2, 68.7)
+myData <- data.frame(T10, T30, T50, T70, T100)
+rownames(myData) <- paste0("batch",1:5)
+show(myData)
+```
+
+
+a) Maak een boxplot van yield (= opbrengst in %) als functie van temperatuur.
+
+```{r}
+
+```
+
+b) Welke analye is geschikt om te onderzoeken of temperatuur een significant effect heeft op de opbrengst?
+
+
+
+
+
+c) Heeft temperatuur een significant effect heeft op de opbrengst? Toets met alpha = 0.05. Hint: Converteer het dataframe eerst naar "long" format (zie de ppt en Voorbeelden 11.4 en 11.5).
+
+```{r}
+
+```
+
+
+
+
+d) Wat is de effectsterkte van temperatuur op de opbrengst? Is het een zwak, matig of sterk effect?
+
+```{r}
+
+```
+
+
+
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 11.3 - Microarray analyse van aardappelziekte (3)
+#
+###############################################################################
+
+Tomatenplanten kunnen worden geïnfecteerd door de aardappelziekte (Phytophthora infestans), zie Voorbeeld 10.3. Een onderzoeker van de Hanzehogeschool wil – in opdracht van het tomaten-kweekbedrijf “Sappige Pomodoro” – weten of de genexpressies in tomatenplanten tijdens een infectie ook veranderen. De onderzoeker heeft de genexpressie van 100 000 genen m.b.v. 4-channel microarray’s bepaald. Voor 4 momenten na infectie, T0, T1, T2 en T3 (d.w.z. na 0, 1, 2 en 3 weken) zijn de genexpressies d.m.v. 7 MA's gemeten. De metingen staan in de file
+
+                   Tomato_T1230_corrected_v3.txt
+                   
+een tab-separated tekstfile met header. De kolommen zijn gelabeld logE.t.j waarbij t de tijd in weken is, en j het nummer van de MA, dus logE.2.7 is de meting voor 2 weken infectie d.m.v. de 7e MA.
+
+
+a) Lees de data in R in.
+
+```{r}
+
+```
+
+
+b) Waarom is een block ANOVA geschikt om te onderzoeken of de genexpressie in de tijd verandert?
+
+
+
+c) Programeer een eigen R-functie die de p−waarde van een 1-way ANOVA analyse per gen berekent.
+
+```{r}
+
+```
+
+
+d) Bereken p-waarden voor alle 100 000 genen, zonder multiple testing correctie. Hoeveel en welke genen veranderen in de tijd?
+
+```{r}
+
+```
+
+
+```{r}
+
+
+```
+
+
+
+e) Hoeveel vals positieve uitslagen verwacht je?
+
+
+
+
+f) Voer een FDR correctie op de p-waarden uit. Hoeveel en welke genen zijn nu DEG’s?
+
+```{r}
+
+```
+
+g) Voer ook een Bonferroni correctie op de p-waarden uit. Hoeveel en welke genen zijn nu DEG’s?
+
+```{r}
+
+```
+
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 11.4 - stack en unstack: 1 factor A
+#
+###############################################################################
+
+Data in "wide" format:
+
+```{r}
+WideData <- data.frame(level1 = c(1, 2, 3),
+                        level2 = c(4, 5, 6),
+                        level3 = c(7, 8, 9))
+WideData
+```
+
+
+a) Data van "wide" naar "long" format:
+
+```{r}
+LongData <- stack(WideData)
+colnames(LongData) <- c("y", "A")
+LongData
+```
+
+b) Data van "long" naar "wide" format:
+
+```{r}
+WideData.2 <- unstack(LongData)
+WideData.2
+```
+
+
+###############################################################################
+#
+# Voorbeeld 11.5 - Stack en unstack: 1 factor A met herhaling (factor B)
+#
+###############################################################################
+
+Data in "wide" format:
+
+```{r}
+WideData <- data.frame(level1 = c(1, 2, 3),
+                        level2 = c(4, 5, 6),
+                        level3 = c(7, 8, 9))
+rownames(WideData) <- paste0("Sample.",1:3)
+
+WideData
+```
+
+a) Data van "wide" naar "long" format:
+
+```{r}
+LongData <- stack(WideData)
+colnames(LongData) <- c("y", "A")
+a <- ncol(WideData)
+b <- nrow(WideData)
+B <- factor(rep(rownames(WideData), a))
+LongData <- cbind(LongData, "B" = B)
+LongData
+```
+
+b) Data van "long" naar "wide" format (naar levels A):
+
+```{r}
+# Eerst juist sorteren zodat factor B weer rownames kan worden:
+LongData <- LongData[order(LongData$A, LongData$B), ]
+# Unstack naar "wide":
+WideData.2 <- unstack(LongData, y ~ A)
+rownames(WideData.2) <- levels(LongData$B)
+WideData.2
+```
+
+c) Data van "long" naar "wide" format (naar levels B):
+
+```{r}
+# Eerst juist sorteren zodat factor A weer rownames kan worden:
+LongData <- LongData[order(LongData$B, LongData$A), ]
+# Unstack naar "wide":
+WideData.3 <- unstack(LongData, y ~ B)
+rownames(WideData.3) <- levels(LongData$A)
+WideData.3
+```
+
+
+
+
+
+
+
+
+
+

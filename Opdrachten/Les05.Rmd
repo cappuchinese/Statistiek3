@@ -268,12 +268,7 @@ Data: Gegevens van 256 voedingsmiddelen per 100g product:
 a) Lees de file Les05_Voedingsmiddelen_db_v1.txt in. Dit is een tab-delimited text file MET header
 
 ```{r}
-setwd(dir = "H:/Hanze/ILST/vakken/kwartaal 07/Statistiek 3 BIN/lessen/2019-2020/Les 05 - Multiple t-toetsen")
-getwd()
-dir()
-
-myData <- read.table(file = "Les 05_Voedingsmiddelen_db_v1.txt", header = T, sep = "\t")
-myData
+myData <- read.table(file = "data/Les05.txt", header = T, sep = "\t")
 ```
 
 
@@ -352,7 +347,7 @@ of m.b.v. de functie droplevels
 
 ```{r}
 TEMP <- myData[(myData$type == "chips" | myData$type == "chocolade"), ]
-TEMP$type <- droplevels(TEMP$type)
+# TEMP$type <- droplevels(TEMP$type)
 boxplot(H.kcal ~ type, data = TEMP,
         xlab = "Voedseltype", ylab="Energie-waarde (kcal/100 g)")
 ```

@@ -1,0 +1,639 @@
+---
+title: "Stat3_BIN_Les14_v4"
+author: "Emile Apol"
+date: "3/31/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+###############################################################################
+#
+# Statistiek 3 BIN
+#
+# 2019-2020
+#
+# Emile Apol 
+#
+# Les 14 - Clustering 3
+#
+###############################################################################
+
+
+
+###############################################################################
+#
+# Voorbeeld 14.1 - Poissonverdeling van vals positieve uitslagen
+#
+###############################################################################
+
+Stel: MA analyse met G = 1000 genen en toetsen met significantie alpha = 0.05. 
+
+```{r}
+alpha <- 0.05
+G <- 1000
+
+n.FP.av <- G*alpha
+cat("\nGemiddeld aantal FP genen: ",n.FP.av,"\n")
+
+# Parameter van Poisson verdeling:
+lambda <- n.FP.av
+
+curve(dpois(x, lambda = lambda), from = 0, to = 2*lambda, n = 2*lambda+1, add = F, type = "l", col = "red",
+      xlab = "Aantal vals positieven, FP", ylab = "Kansverdeling, p(FP)")
+
+
+```
+
+Bereken het 95% BI voor het gemiddeld aantal vals positieven bij een MA analyse.
+
+```{r}
+BI <- qpois(c(0.025, 0.975), lambda = lambda)
+cat("Het 95% BI voor het aantal FP genen bij ",G," onderzochte genen is: [",BI,"]\n")
+```
+
+
+a) Voer dezelfde berekening uit voor G = 100 000 genen.
+
+
+```{r}
+
+```
+
+
+b) Voer dezelfde berekening uit voor G = 20 genen.
+
+```{r}
+
+```
+
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 14.2 - hierarchisch en k-means clustering: 4 genen, 2 samples
+#
+###############################################################################
+
+We hebben een dataset van de logfold waarden M van twee samples t.o.v. een referentie, gemeten met 2-channel MA's.
+
+```{r}
+myData <- data.frame(M.1 = c(8.0, 7.0, 6.0, 2.0),
+                     M.2 = c(8.0, 8.0, 6.0, 3.0))
+rownames(myData) <- paste0("Gene ",LETTERS[1:4])
+myData
+```
+
+a) Maak een mooie scatterplot van de log genexpressies van sample 2 als functie van de log genexpressie van sample 1 (dus M.1 langs de x-as en M.2 langs de y-as). Annoteer de datapunten met de gennaam. Hint: gebruik de functie text().
+
+```{r}
+
+```
+
+
+b) Wat lijkt op basis van Euclidische afstanden een redelijke clustering?
+
+
+
+
+c) Cluster deze genen o.b.v. Euclidische afstand en "average" linkage. Maak een dendrogram. Hint: het de optie hang=-1 kun je het dendrogram mooier maken, door de "takken" door te laten trekken tot de basis.
+
+```{r}
+
+```
+
+d) Maak m.b.v. de functie cutree 2 subclusters van dit dendrogram. Welke genen horen in welk subcluster?
+
+```{r}
+
+```
+
+
+e) Voer k-means clustering uit met k=2 clusters; gebruik 5 random runs. Welke genen horen in welk subcluster?
+
+```{r}
+
+```
+
+f) Source de R-code "Dendrograms_v8.R" (zie R-functies op BlackBoard). Maak een "dendrogram" van de k-means clustering van e. m.b.v. de speciale functie makeKMeansDendrogram().
+
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 14.3 - Broodbeleg (1)
+#
+###############################################################################
+
+
+Van bijna al onze etenswaren staat op het etiket de nutrientensamenstelling vermeld. Dit bestaat o.a. uit de hoeveelheid eiwit, suikers, zetmeel, vetten, vezels en natrium per 100 g product. In deze opgave gaan we verschillende soorten broodbeleg (jam, kaas, vlees, vlokken, hagelslag etc.) vergelijken en clusteren op basis van nutrientensamenstelling.
+
+De dataset “Broodbeleg_1.txt” bevat voor 27 verschillende producten o.a. de waarden van de 7 eigenschappen:
+
+  eiwit        = g eiwit per 100 g product
+  kool.suiker  = g suiker per 100 g product
+  kool.anders  = g overige koolhydraten (zetmeel) per 100 g product
+  vet.vz       = g verzadigd vet per 100 g product
+  vet.ov       = g onverzadigd vet per 100 g product
+  vez          = g voedingsvezels per 100 g product
+  Na           = g natrium per 100 g product
+  
+Daarnaast is er o.a. nog een kolom Omschrijving die aangeeft welk product het is (met fabrikant).
+
+a) Lees in R deze tab-separated dataset met header in als dataframe myData.
+
+```{r}
+
+```
+
+
+b) Maak uit dataframe myData een nieuw dataframe M door alleen de 7 bovengenoemde nutrienten (eiwit, kool.suiker, ..., Na) te selecteren, en de "Omschrijving" als rownames te gebruiken. NB. Het is belangrijk om de juiste rownames in het dataframe te hebben wat je wilt gaan clusteren, zodan in het dendrogram elk item duidelijk herkanbaar is!
+
+
+```{r}
+
+```
+
+c) Voer een hiërarchische clustering uit op de 27 soorten broodbeleg op basis van de 7 nutrienten. Gebruik “euclidean” afstanden en “average” linkage. Maak via plot een dendrogram. Je kunt de grootte van de labels aanpassen via cex. Pas de uitlijning van de labels aan via hang=-1.
+
+```{r}
+
+```
+
+d) Gebruik de functie cutree (zie ppt van Les 13) om twee subclusters te maken. Wat zijn de producten in beide subclusters? 
+
+```{r}
+
+```
+
+
+e) Voer k-means clustering uit met k=2 clusters; gebruik 5 random runs. Welke producten horen in welk subcluster?
+
+```{r}
+
+```
+
+f) Source de R-code "Dendrograms_v8.R" (zie R-functies op BlackBoard). Maak een "dendrogram" van de k-means clustering van e. m.b.v. de speciale functie makeKMeansDendrogram(). Hint: met de optie cex kun je de grootte van de x-labels aanpassen.
+
+```{r}
+
+```
+
+
+g) Vergelijk de hierarchische en k-means clusteringen.
+
+
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 14.4 - k-mean clusteren: 9 genen, 2 samples
+#
+###############################################################################
+
+
+```{r}
+myData <- data.frame(M.1 = c(-3.0, -2.0, -2.0, -3.0, 0.0, 2.0, 3.0, 3.0, 2.0),
+                     M.2 = c(-2.0, -2.0, -3.0, -3.0, 0.0, 2.0, 2.0, 3.0, 3.0))
+rownames(myData) <- paste0("Gene ",LETTERS[1:9])
+myData
+```
+
+a) Maak een mooie scatterplot van de log genexpressies van sample 2 als functie van de log genexpressie van sample 1 (dus M.1 langs de x-as en M.2 langs de y-as). Annoteer de datapunten met de gennaam. Hint: gebruik de functie text().
+
+```{r}
+
+```
+
+
+b) Wat lijkt op basis vann deze plot een "logische" indeling in "subclusters"?
+
+
+
+c) Voer een hiërarchische clustering uit op de 9 genen op basis van de 2 samples. Gebruik “euclidean” afstanden en “average” linkage. Maak via plot een dendrogram. Je kunt de grootte van de labels aanpassen via cex. Pas de uitlijning van de labels aan via hang=-1. 
+
+
+
+```{r}
+
+```
+
+
+d) Bepaal m.b.v. de functie cutree() welke 3 "subclusters" er zijn, en welke genen in welk subcluster zitten.
+
+```{r}
+
+```
+
+e) Voer k-means clustering uit met k=2 clusters; gebruik 1 random runs. Welke genen horen in welk subcluster?
+
+```{r}
+
+```
+
+f) Voer een paar keer k-means clustering uit met k=2 clusters. Krijg je steeds dezelfde clustering?
+
+
+```{r}
+
+```
+
+
+g) Bepaal de totale SS.within als functie van het aantal clusters k (zie Powerpoint Les 14). Wat is voor deze data het optimale aantal clusters?
+
+```{r}
+
+```
+
+
+
+
+h) Maak een mooie scatterplot van de log genexpressies van sample 2 als functie van de log genexpressie van sample 1 (dus M.1 langs de x-as en M.2 langs de y-as). Geef de punten een kleur volgens de hierarchische subclusters met k = 3. Hint: in R hebben de kleuren ook een nummer vanaf 1...
+
+```{r}
+
+```
+
+
+
+###############################################################################
+#
+# Voorbeeld 14.5 - Gepaarde t-toets en block ANOVA (1)
+#
+###############################################################################
+
+We hebben de volgende data van de expressie van een bepaald gen o.b.v. 3 dual-channel microarray metingen: 
+In "wide" format:
+
+         sample  logR    logG
+           1       1       4
+           2       3       5 
+           3       5       7
+
+waarbij R en G de genexpressie zijn voor zieke en gezonde personen (d.w.z. 2 levels van factor A = gezondheid).
+
+In "MA" format:
+
+         logR.1  logR.2  logR.3  logG.1  logG.2  logG.3
+           1       3       5       4       5       7
+
+
+```{r}
+( y <- c(1, 3, 5, 4, 5, 7) )
+( A <- factor(rep(c("R", "G"), each = 3)) )
+( sample <- factor(paste0("Sample.",rep(1:3, 2))) )
+```
+
+a) Maak een boxplot van de genexpressie als functie van gezondheid (factor A).
+
+```{r}
+
+```
+
+b) Welke toets is het geschiktste om te onderzoeken of gezondheid een significant effect heeft op de expressie van dit gen?
+
+
+
+c) Komt dit gen differentieel tot expressie? Leg uit. Toets met alpha = 0.05.
+
+```{r}
+
+```
+ 
+ 
+ d) Voer ook een block ANOVA uit. Verschilt het resultaat met de analyse van c.? Leg kort uit.
+ 
+```{r}
+
+```
+ 
+
+
+
+
+e) Wat is de effectsterkte van de factor gezondheid? Heeft gezondheid een zwak, matig of sterk effect op de genexpressie?
+
+```{r}
+
+```
+
+
+
+
+f) Maak van het "long" format een dataframe, en zet dit om naar een "wide" format dataframe met sample als rownames (zie ook Les 11).
+
+```{r}
+
+```
+
+g) Omdat de data gepaard gemeten zijn, is i.p.v. een gewone boxplot een "gepaarde" boxplot mooier: ggpaired uit package ggpubr. Deze functie heeft als input de data als "wide" format, zie ook Les 09.
+
+```{r}
+
+```
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 14.6 - Gepaarde t-toets en block ANOVA (2)
+#
+###############################################################################
+
+We hebben de volgende data van de expressie van een bepaald gen o.b.v. 3 4-channel microarray metingen: 
+In "wide" format:
+
+         sample  logR    logG    logB    logY
+           1       1       3       0       2
+           2       3       5       2       3
+           3       5       6       4       6
+
+waarbij R, G, B en Y de genexpressie zijn voor zieke en gezonde personen (d.w.z. 4 levels van factor A = gezondheid).
+
+In "MA" format:
+
+         logR.1  logR.2  logR.3  logG.1  logG.2  logG.3  logB.1  logB.2  logB.3  logY.1  logY.2  logY.3
+           1       3       5       3       5       6       0       2       4       2       3       6
+
+```{r}
+( y <- c(1, 3, 5, 3, 5, 6, 0, 2, 4, 2, 3, 6) )
+( A <- factor(rep(c("R", "G", "B", "Y"), each = 3)) )
+( sample <- factor(paste0("Sample.", rep(1:3, 4))) )
+```
+
+a) Maak een boxplot van de genexpressie als functie van gezondheid (factor A).
+
+```{r}
+
+```
+
+b) Welke toets is het geschiktste om te onderzoeken of gezondheid een significant effect heeft op de expressie van dit gen?
+
+
+
+
+c) Komt dit gen differentieel tot expressie? Leg uit. Toets met alpha = 0.05.
+
+ 
+```{r}
+
+```
+ 
+
+
+
+d) Wat is de effectsterkte van de factor gezondheid? Heeft gezondheid een zwak, matig of sterk effect op de genexpressie?
+
+```{r}
+
+```
+
+
+
+
+e) Maak van het "long" format een dataframe, en zet dit om naar een "wide" format dataframe met sample als rownames (zie ook Les 11).
+
+```{r}
+
+```
+
+f) Omdat de data gepaard gemeten zijn, is i.p.v. een gewone boxplot wellicht informatiever om de data in het "wide" format m.b.v. de functie matplot() en matlines() te plotten, zie ook Les 12. Plot op deze manier de log genexpressie als functie van factor A (= gezondheid), met voor elk sample een andere kleur.
+
+```{r}
+
+```
+
+g) Wat was de conclusie geweest als je de data m.b.v. een 1-way ANOVA had geanalyseerd?
+
+```{r}
+
+```
+
+
+
+h) Leg uit waarom dit resultaat anders is dan bij c.
+
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 14.7 - T-toetsen en ANOVA's (1)
+#
+###############################################################################
+
+Gen expressie data gemeten met een Dual Channel Microarray: 7 replica's (= samples), M = log(R)-log(G) = log(R/G) waarden voor 25 genen (= regels). Op de data is al een background correctie en een normalisatie toegepast.
+
+Datafile: "Dual_Channel_variation1.txt"
+
+
+a) Lees de data in. Schrijf een eigen 1-sample t functie om de DEG's te vinden, pas je functie toe op de data en pas vervolgens 
+Bonferroni correctie toe. Welke genen zijn DEG's?
+
+Inlezen data:
+
+```{r}
+
+```
+Eigen t-toets:
+
+```{r}
+
+```
+
+Analyseren per gen:
+
+```{r}
+
+```
+
+Bonferroni correctie:
+ 
+```{r}
+
+```
+
+b) Maak een nieuw dataframe met daarin alleen alle M-waarden van de DEG's.
+
+```{r}
+
+```
+
+c) Maak met de functie matplot en matlines een grafiek van M-waarden als functie van sample. Per gen een andere kleur.
+
+```{r}
+
+```
+
+
+d) Voer hierarchische clustering uit op deze DEG's met Euclidische afstand en "average" linkage. Maak een dendrogram.
+
+```{r}
+
+```
+
+e) Welke k = 3 subclusters zijn er? Welke genen horen bij welke subcluster? Gezien het dendrogram, lijkt dit een "logische" gen-indeling?
+
+```{r}
+
+```
+
+
+
+f) Voer k-means clustering uit met k = 3 clusters, gebruik nstart = 5 pogingen. Welke genen horen bij welke (sub)cluster? Maak ook een dendrogram.
+
+```{r}
+
+```
+
+
+
+
+g) Voer hierarchische clustering uit met Absolute Pearson afstanden en "average" linkage. Maak een dendrogram.
+
+```{r}
+
+```
+
+
+h) Maak een heapmap van de DEG's, en cluster alleen de genen met Euclidische afstanden en "average" linkage.
+
+```{r}
+
+```
+
+
+
+i) Maak een heapmap van de DEG's, en cluster alleen de genen met Absolute Pearson afstanden en "average" linkage.
+
+```{r}
+
+```
+
+
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 14.8 - T-toetsen en ANOVA's (2)
+#
+###############################################################################
+
+Gen expressie data gemeten met een Dual Channel Microarray: 7 replica's (= samples), log(R) en log(G) waarden voor 25 genen (= regels). Op de data is al een background correctie en een normalisatie toegepast.
+
+Datafile: "Dual_Channel_variation2.txt"
+
+
+a) Lees de data in. Schrijf een eigen gepaarde t functie om de DEG's te vinden, pas je functie toe op de data en pas vervolgens 
+Bonferroni correctie toe. Welke genen zijn DEG's?
+
+Inlezen data:
+
+```{r}
+
+```
+Eigen gepaarde t-toets:
+
+```{r}
+
+```
+
+Analyseren per gen:
+
+```{r}
+
+```
+
+Bonferroni correctie:
+ 
+```{r}
+
+```
+
+b) Lees de data in. Schrijf een eigen block ANOVA functie om de DEG's te vinden, pas je functie toe op de data en pas vervolgens Bonferroni correctie toe. Welke genen zijn DEG's?
+
+Inlezen data:
+
+```{r}
+
+```
+Eigen block ANOVA:
+
+```{r}
+
+```
+
+Analyseren per gen:
+
+```{r}
+
+```
+
+Bonferroni correctie:
+ 
+```{r}
+
+```
+
+
+c) Maak een nieuw dataframe met daarin alleen alle M-waarden van de DEG's.
+
+```{r}
+
+```
+
+d) Maak met de functie matplot en matlines een grafiek van M-waarden als functie van sample. Per gen een andere kleur.
+
+```{r}
+
+```
+
+
+e) Voer hierarchische clustering uit op deze DEG's met Euclidische afstand en "average" linkage. Maak een dendrogram.
+
+```{r}
+
+```
+
+f) Welke k = 3 subclusters zijn er? Welke genen horen bij welke subcluster? Gezien het dendrogram, lijkt dit een "logische" gen-indeling?
+
+```{r}
+
+```
+
+
+
+g) Voer k-means clustering uit met k = 3 clusters, gebruik nstart = 5 pogingen. Welke genen horen bij welke (sub)cluster? Maak ook een dendrogram.
+
+```{r}
+
+```
+
+
+
+
+
+
+

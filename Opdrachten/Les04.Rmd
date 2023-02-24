@@ -400,9 +400,7 @@ Op Blackboard, in de ascii file "Kinderen_v1.txt" staan data van het aantal kind
 a) Lees de data data in; de file bevat een header en is tab-separated.
 
 ```{r}
-getwd()
-setwd("E:/Hanze/ILST/vakken/kwartaal 07/Statistiek 3 BIN/lessen/2020-2021/Les 04 - Welch t-toetsen")
-myData <- read.table(file = "Kinderen_v1.txt", header = T, sep = "\t")
+myData <- read.table(file = "data/Les04.txt", header = T, sep = "\t")
 head(myData)
 str(myData)
 myData

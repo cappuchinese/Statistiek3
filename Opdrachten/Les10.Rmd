@@ -1,0 +1,410 @@
+---
+title: "Stat3_les10_FS_v4"
+author: "Emile Apol"
+date: "3/23/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+###############################################################################
+#
+# Statistiek 3 BIN
+#
+# 2019-2020
+#
+# Emile Apol 
+#
+# Les 10 - Differentially Expressed Genes (DEGs) 3
+#
+###############################################################################
+
+
+
+###############################################################################
+#
+# Voorbeeld 10.0 - Uit- en opvouwen van dataframe
+#
+###############################################################################
+
+Dit is een simpel voorbeeld van een 2-channel MA dataset met 4 genen en 3 replica's.
+
+```{r}
+x <- 1:24
+ruis <- 1.0
+set.seed(1233)
+x <- x + rnorm(24, mean = 0, sd = ruis)
+( D <- matrix(x, ncol = 6) )
+colnames(D) <- c(paste0(rep("logR.",3),1:3),
+                 paste0(rep("logG.",3),1:3))
+D
+rownames(D) <- paste0("gene.",1:4)
+D
+genes <- data.frame(D)
+genes
+```
+
+
+a) Bereken een vector M = logR - logG. Maak vervolgens een nieuw dataframe genes2 met 3 kolommen M.i = logR.i - logG.i (i = 1..3) per gen.
+
+```{r}
+
+```
+
+b) Bereken een vector M = logR - logG, en een vector A = (logR + logG)/2. Maak een MA-plot.
+
+```{r}
+
+```
+
+c) Voer lineare regressie uit op M als functie van A met een lineaire model:
+           M = a.0 + a.1 * A
+   Gebruik daarvoor de R-functie res <- lm(M ~ A). Wat zijn de parameters a.0 (intercept) en a.1 (slope)? Meer informatie kun je krijgen via summary(res).
+
+```{r}
+
+```
+
+d) Plot de "gefitte" M-waarden in de MA-plot. Deze "gefitte" M-waarden kun je vinden in res$fitted.values.
+
+
+```{r}
+
+```
+
+e) Bereken de "gecorrigeerde" (d.w.z. genormaliseerde) M-waarden als: M.cor = M - M.fit, en maak een MA plot o.b.v. deze gecorigeerde M-waarden.
+
+
+```{r}
+
+```
+
+f) Voer i.p.v. een lineaire regressie loess-regressie uit op M als functie van A d.m.v. de syntax
+        res <- loess(M ~ A)
+   De gefitte M-waarden kun je vinden in res$fitted. Plot deze gefitte M-waardein in het (ongenormaliseerde) MA-plot.
+
+```{r}
+
+```
+
+g) Bereken de "gecorrigeerde" (d.w.z. genormaliseerde) M-waarden als: M.cor = M - M.fit o.b.v. de loesss fit, en maak een MA plot o.b.v. deze gecorigeerde M-waarden.
+
+```{r}
+
+```
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 10.1 - Differentiële gen expressie 
+#
+###############################################################################
+
+In een 2-channel microarray experiment met 5 replica’s, zoals beschreven in Voorbeelden 8.2 en 9.2, wordt gekeken of er bepaalde genen differentieel tot expressie komen, als je kankercellen en gezonde cellen vergelijkt. De log-getransformeerde R- en G-waarden staan per gen (1 t/m 100) als volgt in de file DEG_3.txt met tabs als scheiding:
+
+        logR1  logR2  logR3  logR4  logR5  logG1  logG2  logG3  logG4  logG5
+gene1
+gene2
+gene3
+...
+gene100
+
+
+a) Lees in R deze data in als dataframe genes3.
+
+```{r}
+
+```
+
+
+
+
+b) Bereken één vector met de M- en de A-waarden voor alle replica’s samengevoegd, waarbij:
+
+     M = logR - logG
+     A = (logR + logG)/2
+
+```{r}
+
+```
+
+
+
+c) Maak een MA-plot van deze gegevens.
+
+```{r}
+
+```
+
+
+
+
+
+
+d) Bereken een lokale fit door deze MA-plot via:
+
+          fit <- loess(M ~ A)
+          
+en laat deze fit zien d.m.v. een rode lijn. Gebruik hiervoor:
+
+          xplot <- seq(0, 18, 0.1)
+          M.loess <- predict(fit, newdata=data.frame(A=xplot))
+          lines(xplot, M.loess, col=”red”)
+          
+```{r}
+
+```
+
+
+
+e) Corrigeer de M-waarden met de loess fit:
+           
+           M.corr <- M – fit$fitted
+           
+```{r}
+
+```
+
+
+
+f) Maak een nieuwe MA-plot op basis van de gecorrigeerde 𝑀𝑀-waarden.
+
+```{r}
+
+```
+
+
+g) Maak van de gecorrigeerde M-waarden een dataframe genes4 waarin per kolom de gecorrigeerde M-waarden van één replica staan.
+
+```{r}
+
+```
+
+
+
+h) Voer op genes4 per gen (= rij) een 1-sample t-toets uit om te zien welke genen differentieel tot expressie komen. Verzamel de p-waarden in een vector. Gebruik de functie apply en een zelfgemaakte functie om de p-waarde van een 1-sample t-toets per rij van een matrix te berekenen. Hoeveel en welke genen zijn significant? Toets met alpha = 0.05.
+
+```{r}
+
+```
+
+
+i) Corrigeer deze vector met p-waarden m.b.v. de Holm methode. Hoeveel en welke genen zijn nu significant? Toets met alpha = 0.05.
+
+```{r}
+
+```
+
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 10.2 - Microarray analyse van aardappelziekte
+#
+###############################################################################
+
+
+Ook tomatenplanten kunnen worden geinfecteerd door de aardappelziekte (Phytophthora infestans). Om het effect van aardappelziekte op gen niveau te analyseren in tomatenplanten, is het volgende microarray experiment uitgevoerd. Zes samples van gezonde tomatenplanten en zes samples van zieke tomatenplanten werden met 6 dual-channel Affymetrix chips onderzocht. Elke chip bevat 10 000 genen, het R-kanaal correspondeerde met zieke planten, het G-kanaal met gezonde planten. De data staan in de file
+        "Tomato_RG_uncorrected_2.txt"
+(een tab-separated ascii file met een header, en gen naam als rowname), in het format
+        logR.1 logR.2 … logR.6 logG.1 logG.2 … logG.6
+Dit zijn log-getransformeerde data met al een backgroud-correctie uitgevoerd. De data zijn echter nog niet genormaliseerd.
+
+
+a) Lees de data in R in. Bereken voor elk van de 6 replica metingen de waarden van:
+
+     M = logR - logG
+     A = (logR + logG)/2
+
+```{r}
+
+```
+
+
+
+b) Maak een goede MA-plot van de bij a. berekende M- en A-waarden.
+
+```{r}
+
+```
+
+
+c) Voer een loess normalisatie uit op de M-waarden met de functie loess(), en plot de loess-baseline in de MA-plot als een rode lijn.
+
+```{r}
+
+```
+
+
+d) Maak een goede MA-plot van de genormaliseerde M-waarden als functie van de A-waarden.
+
+```{r}
+
+```
+
+
+e) Herschik de M-waarden in een nieuw dataframe met als format:
+            M.1 M.2 … M.6
+waarbij de rownames de gennamen zijn.
+
+```{r}
+
+```
+
+f) Welke statistische toets is geschikt om met de data van e. aan te tonen welke genen differentieel tot expressie komen (d.w.z. DEG’s zijn)?
+
+
+
+
+g) Schrijf in R een functie om de statistische toets bij f. per gen (= regel van je dataframe) uit te voeren.
+
+```{r}
+
+```
+
+
+h) Bereken per gen in je dataframe de p-waade zonder multiple testing correctie, en toets met alpha = 0.05 hoeveel en welke genen DEG's zijn.
+
+```{r}
+
+```
+
+
+i) Hoeveel vals positieve DEG's verwacht je voor 10 000 genen als je met alpha = 0.05 toetst?
+
+
+
+
+j) Voer op de p-waarden een FDR multiple testing correctie uit. Hoeveel en welke genen zijn nu DEG’s? Voer ook een Bonferroni en een Holm-correctie uit.
+
+```{r}
+
+```
+
+
+
+
+k) Maak een Volcano-plot van de resultaten (zie PowerPoint op BlackBoard).
+
+```{r}
+
+```
+
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 10.3 - Microarray analyse van aardappelziekte (2)
+#
+###############################################################################
+
+Tomatenplanten kunnen worden geïnfecteerd door de aardappelziekte (Phytophthora infestans), zie Voorbeeld 10.2. Een onderzoeker van de Hanzehogeschool wil – in opdracht van het tomaten-kweekbedrijf “Sappige Pomodoro” – weten of de genexpressies in tomatenplanten tijdens een infectie ook veranderen. De onderzoeker heeft de genexpressie van 100 000 genen m.b.v. single-channel microarray’s bepaald. Voor 4 momenten na infectie, T0, T1, T2 en T3 (d.w.z. na 0, 1, 2 en 3 weken) zijn de genexpressies voor 7 replica’s gemeten. De metingen staan in de file
+
+                   Tomato_T1230_corrected_v2.txt
+                   
+een tab-separated tekstfile met header. De kolommen zijn gelabeld logE.t.i waarbij t de tijd in weken is, en i de replica, dus logE.2.7 is de 7e replica-meting voor 2 weken infectie.
+
+
+a) Lees de data in R in.
+
+```{r}
+
+```
+
+
+b) Waarom is een 1-way ANOVA geschikt om te onderzoeken of de genexpressie in de tijd verandert?
+
+
+
+c) Programeer een eigen R-functie die de p−waarde van een 1-way ANOVA analyse per gen berekent.
+
+```{r}
+
+```
+
+
+d) Bereken p-waarden voor alle 100 000 genen, zonder multiple testing correctie. Hoeveel en welke genen veranderen in de tijd?
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+
+e) Hoeveel vals positieve uitslagen verwacht je?
+
+
+
+
+f) Voer een FDR correctie op de p-waarden uit. Hoeveel en welke genen zijn nu DEG’s?
+
+```{r}
+
+```
+
+g) Voer ook een Bonferroni correctie op de p-waarden uit. Hoeveel en welke genen zijn nu DEG’s?
+
+```{r}
+
+```
+
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 10.4 - Logtransformatie
+#
+###############################################################################
+
+```{r}
+y <- 450+rgamma(n = 10000, shape = 3, rate = 0.007)
+
+hist(y, freq = F, xlab="Intensiteit", breaks = 50, main="Histogram van y", xlim = c(0, max(y)))
+
+mu <- mean(y); sigma2 <- var(y); sigma <- sqrt(sigma2)
+curve(dnorm(x, mean = mu, sd = sigma), from = 0, to = max(y), n = 100, add = T, col = "red")
+```
+
+```{r}
+logy <- log2(y)
+
+hist(logy, freq = F, xlab="2Log intensiteit", breaks = 50, main="Histogram van log(y)")
+
+mu <- mean(logy); sigma2 <- var(logy); sigma <- sqrt(sigma2)
+curve(dnorm(x, mean = mu, sd = sigma), from = min(logy), to = max(logy), n = 100, add = T, col = "red")
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

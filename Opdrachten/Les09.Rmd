@@ -1,0 +1,248 @@
+---
+title: "Stat3_Les09_FS_v4"
+author: "Emile Apol"
+date: "10-3-2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+###############################################################################
+#
+# Statistiek 3 BIN
+#
+# 2019-2020
+#
+# Emile Apol 
+#
+# Les 09 - Differentially Expressed Genes (DEGs) 2
+#
+###############################################################################
+
+
+
+###############################################################################
+#
+# Voorbeeld 9.1 - Differentiele genexpressie (1) 
+#
+###############################################################################
+
+In een experiment werd de 2log genexpressie van het gen HPX17 bepaald voor verschillende zoogdieren in actieve stand en in rust. Er werd gemeten bij 3 katten, 3 honden en 3 cavia's, elk een keer in actieve toestand en in rust. De resultaten staan in het volgende dataframe.
+
+```{r}
+genes <- data.frame(proefdier = factor(rep(c(paste0("kat",1:3), 
+                                             paste0("hond", 1:3),
+                                             paste0("cavia",1:3)), 2)),
+                    logexpressie = c(3.12, 4.78, 3.55, 2.88, 2.09, 3.11, 5.01, 4.79, 5.52,
+                                     2.81, 4.33, 3.08, 2.25, 1.77, 2.70, 4.55, 4.18, 5.37),
+                    toestand = factor(c(rep("actief", 9), rep("rust", 9))) )
+genes
+```
+
+a) Welke statistische toets is geschikt om te onderzoeken of het gen HPX17 differentieel tot expressie komt?
+
+
+
+b) Maak een boxplot van deze data.
+
+```{r}
+
+```
+
+
+
+
+c) Is er verschil in genexpressie tussen de actieve en rust toestand? (D.w.z., komt het gen differentieel tot expressie?) Toets met alpha = 0.05.
+
+```{r}
+
+```
+
+
+
+d) Wat is de effectsterkte van "toestand" op de log genexpressie? Is het een zwak, matig of sterk effect?
+
+```{r}
+
+```
+
+
+
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 9.2 - Differentiele genexpressie (2)
+#
+###############################################################################
+
+
+In een 2-channel microarray experiment met 5 replica’s (i = 1..5), zoals beschreven in Voorbeeld 8.2, wordt gekeken of er bepaalde genen differentieel tot expressie komen, als je kankercellen en gezonde cellen vergelijkt. De gecorrigeerde, log-getransformeerde R- en G-waarden staan per gen g (1 t/m 100) als volgt in de ascii file DEG_3.txt met tabs als scheiding.
+
+a) Lees in R deze data in als dataframe "genes3", en bekijk de structuur van dit dataframe.
+
+```{r}
+
+```
+
+
+b) Bereken voor elke replica een vector met de M_(g,i) = log2(R_(g,i)/G_(g,i)) = log2(R_(g,i)) - log(G_(g,i)) waarden, en combineer deze kolommen tot een nieuw dataframe genes4. Zorg voor juiste rij- en kolomnamen.
+
+```{r}
+
+```
+
+
+c) Voer op genes4 per gen (= rij) een 1-sample t-toets uit om te zien welke genen differentieel tot expressie komen. Verzamel de p-waarden in een vector. Gebruik de functie apply en een zelfgemaakte functie om de p-waarde van een 1-sample t-toets per rij van een matrix te berekenen (zie Voorbeeld 8.2.b). Hoeveel en welke genen zijn significant? Toets met alpha = 0.05 zonder multiple testing correctie.
+
+```{r}
+
+```
+
+
+d) Corrigeer deze vector met p-waarden m.b.v. de Bonferroni en Holm methode. Hoeveel en welke genen zijn nu significant? Toets met alpha.F = 0.05.
+
+```{r}
+
+```
+
+
+e) Programmeer in R een eigen functie die voor een rij (= gen) van dataframe genes3 de p-waarde van een gepaarde t-toets berekent. Tip: het aantal paren is de helft van de rijlengte.
+
+```{r}
+
+```
+
+f) Voer op genes3 per gen (= rij) een gepaarde t-toets uit om te zien welke genen differentieel tot expressie komen. Verzamel de p-waarden in een vector. Gebruik de functie apply en de zelfgemaakte functie van e. om de p-waarde van een gepaarde t-toets per rij van een matrix te berekenen. Gebruik geen multiple testing correctie. Hoeveel en welke genen zijn significant? Toets met alpha = 0.05.
+
+```{r}
+
+```
+
+
+g) Corrigeer deze vector met p-waarden m.b.v. de Bonferroni en Holm methode. Hoeveel en welke genen zijn nu significant? Toets met alpha.F = 0.05.
+
+```{r}
+
+```
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 9.3 - Genexpressie bij verschillende personen (1)
+#
+###############################################################################
+
+Met behulp van 5 dual-channel microarray’s is van 5 personen de expressie van een bepaald gen gemeten onder twee omstandigheden: in rust en na zware inspanning. Per persoon is één microarray gebruikt. De log-getransformeerde expressiedata (R = zware inspanning, G = in rust = controle) staan in de file inspanning.txt, dit is een tab-separated tekstfile met headers).
+
+a) Lees de data in.
+
+```{r}
+
+```
+
+
+b) Maak een boxplot van deze data met op de x-as de twee omstandigheden (wel/geen inspanning). Lijkt er effect te zijn van inspanning?
+
+```{r}
+
+```
+
+
+
+
+
+c) Leg uit waarom een gepaarde t-toets een geschikte methode is om te onderzoeken of zware inspanning een verschil in genexpressie geeft voor dit bepaalde gen.
+
+
+
+
+d) Leidt zware inspanning tot een significant verschil in genexpressie? Toets met alpha = 0.05.
+
+```{r}
+
+```
+
+
+
+
+
+e) Wat is de effectsterkte, d.w.z. wat is de waarde van Cohen’s d.av? Is het effect van inspanning zwak, matig of sterk?
+
+```{r}
+
+```
+
+
+
+
+f) Wat zou de uitslag van de analyse zijn als je een Welch t-toets had gebruikt? Verklaar het
+verschil.
+
+```{r}
+
+```
+
+
+
+
+
+
+
+###############################################################################
+#
+# Voorbeeld 9.4 - Genexpressie bij verschillende personen (2)
+#
+###############################################################################
+
+Met behulp van 10 dual-channel microarray’s is van 10 personen de expressie van een bepaald gen gemeten onder twee omstandigheden: ziek en na 2 weken medicijngebruik. Per persoon is één microarray gebruikt. De log-getransformeerde expressiedata (R = met medicijn, G = zonder medicijn = ziek = controle) staan in de file medicijn.txt, dit is een tab-separated tekstfile met headers.
+
+a) Lees de data in.
+
+```{r}
+
+```
+
+b) Maak een boxplot van deze data met op de x-as de twee omstandigheden (wel/geen medicijn). Lijkt er effect te zijn van het medicijn?
+
+```{r}
+
+```
+
+
+
+
+c) Leg uit waarom een gepaarde t-toets een geschikte methode is om te onderzoeken of medicijngebruik een verschil in genexpressie geeft voor dit bepaalde gen.
+
+
+
+d) Leidt medicijngebruik tot een significant verschil in genexpressie? Toets met alpha = 0.05.
+
+```{r}
+
+```
+
+
+
+e) Wat is de effectsterkte, d.w.z. wat is de waarde van Cohen’s d.av? Is het effect van medicijngebruik op genexpressie zwak, matig of sterk?
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
